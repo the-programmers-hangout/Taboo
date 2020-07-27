@@ -1,0 +1,5 @@
+{
+  "token" : "<insert-your-token>",
+  "ownerId": "<insert-your-bot-owner-id>",
+  "prefix": "taboo!"
+}
