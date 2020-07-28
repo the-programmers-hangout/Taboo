@@ -36,10 +36,10 @@ class FileListener() {
         if (containsIllegalAttachment) {
             event.message.delete().queue()
             val user = event.author.asMention
-            val type = attachmentWrapper.fileMetadata.type
+            val type = attachmentWrapper.fileMetadata.typeAlias
             when {
-                type.startsWith("text") || attachmentWrapper.fileMetadata.typeAlias == "xml" -> {
-                    event.channel.sendMessage("that seems to be text, uploading to hastebin now... <a:loading:714196361888661594>")
+                type.startsWith("text") -> {
+                    event.channel.sendMessage("that seems to be text, uploading to hasteb.in now... <a:loading:714196361888661594>")
                             .queue() {
                                 message -> message.editMessage(FileUploader().uploadFile(attachmentWrapper)).queue()
                             }
@@ -69,9 +69,12 @@ class FileListener() {
         return when {
             type == "application/x-tika-ooxml" -> "documents"
             type == "application/pdf" -> "pdf files"
-            type == "application/xml" -> "xml"
+            type == "application/xml" -> "text/document"
+            type == "application/json" -> "text/document"
+            type == "application/ld+json" -> "text/document"
+            type == "application/xhtml+xml" -> "text/document"
             type.startsWith("application") -> "binaries"
-            type.startsWith("text") -> "documents or code"
+            type.startsWith("text") -> "text/document+code"
             else -> "those types of files"
         }
     }

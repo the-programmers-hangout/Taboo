@@ -12,11 +12,11 @@ private data class HasteResponse(val key: String = "")
 class FileUploader(){
 
     fun uploadFile(attachmentWrapper: AttachmentWrapper): String {
-        val type = attachmentWrapper.fileMetadata.type
+        val type = attachmentWrapper.fileMetadata.typeAlias
         return when {
-            type.startsWith("text") || attachmentWrapper.fileMetadata.typeAlias == "xml" ->
+            type.startsWith("text") ->
                 uploadToHastebin(attachmentWrapper.fileData.content)
-            else -> "uh oh error go poopie"
+            else -> "An unknown error has occurred."
         }
     }
 
@@ -31,11 +31,11 @@ class FileUploader(){
 
         result.fold(
                 success = {
-                    return "we did it: https://hasteb.in/${it.key}"
+                    return "File uploaded to hasteb.in: https://hasteb.in/${it.key}"
                 },
 
                 failure = {
-                    return "uh oh error go poopie: ${it.localizedMessage}"
+                    return "Unable to upload file to hasteb.in: ${it.localizedMessage}"
                 })
     }
 }
