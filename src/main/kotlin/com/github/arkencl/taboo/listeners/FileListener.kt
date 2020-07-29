@@ -1,9 +1,8 @@
-package com.github.arkencl.taboo.listener
+package com.github.arkencl.taboo.listeners
 
-import com.github.arkencl.taboo.dataclass.FileWrapper
-import com.github.arkencl.taboo.dataclass.FileData
-import com.github.arkencl.taboo.dataclass.FileMetadata
-import com.github.arkencl.taboo.service.FileUploader
+import com.github.arkencl.taboo.dataclasses.*
+import com.github.arkencl.taboo.services.FileUploader
+import com.github.arkencl.taboo.services.PermissionsService
 import com.google.common.eventbus.Subscribe
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
@@ -13,13 +12,17 @@ enum class CommonAlias(val alias: String) {
     DOCUMENT("text/document+code")
 }
 
-class FileListener() {
+class FileListener(private val configuration: Configuration, private val permissionsService: PermissionsService) {
 
     @Subscribe
     fun onMessageReceived(event: GuildMessageReceivedEvent){
+        val guildConfiguration = configuration.getGuildConfig(event.guild.id) ?: return
+
         val message = event.message
 
         if (event.author.isBot || event.message.attachments.isEmpty()) return
+
+        if (permissionsService.hasClearance(event.member!!, guildConfiguration.sendUnfilteredFiles)) return
 
         val attachmentWrappers = message.attachments.map { attachmentWrapperOf(it) }
         attachmentWrappers.forEach { postProcessAttachment(event, it)}
@@ -27,9 +30,6 @@ class FileListener() {
 
     private fun postProcessAttachment(event: GuildMessageReceivedEvent, fileWrapper: FileWrapper) {
         val containsIllegalAttachment = !fileWrapper.fileMetadata.isAllowed
-
-        // logger.debug { "starting post processing on message attachment on ${fileWrapper.fileMetadata.name}" +
-           //     "of type ${fileWrapper.fileMetadata.type} and alias ${fileWrapper.fileMetadata.typeAlias}" }
 
         if (containsIllegalAttachment) {
             event.message.delete().queue()

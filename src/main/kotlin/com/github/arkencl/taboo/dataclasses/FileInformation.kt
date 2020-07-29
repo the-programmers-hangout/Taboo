@@ -1,4 +1,4 @@
-package com.github.arkencl.taboo.dataclass
+package com.github.arkencl.taboo.dataclasses
 
 data class FileMetadata(val name: String,
                         val type: String,

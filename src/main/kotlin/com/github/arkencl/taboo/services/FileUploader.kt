@@ -1,6 +1,6 @@
-package com.github.arkencl.taboo.service
+package com.github.arkencl.taboo.services
 
-import com.github.arkencl.taboo.dataclass.FileWrapper
+import com.github.arkencl.taboo.dataclasses.FileWrapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.kutils.api.annotations.Service

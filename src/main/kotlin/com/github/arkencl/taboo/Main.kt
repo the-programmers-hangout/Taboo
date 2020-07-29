@@ -1,8 +1,9 @@
 package com.github.arkencl.taboo
 
-import com.github.arkencl.taboo.dataclass.loadConfig
-import com.github.arkencl.taboo.locale.Links
-import com.github.arkencl.taboo.locale.Project
+import com.github.arkencl.taboo.dataclasses.Configuration
+import com.github.arkencl.taboo.locale.Link
+import com.github.arkencl.taboo.locale.ProjectDescription
+import com.github.arkencl.taboo.services.PermissionsService
 import me.jakejmattson.kutils.api.dsl.bot
 import me.jakejmattson.kutils.api.extensions.jda.fullName
 import net.dv8tion.jda.api.JDABuilder
@@ -10,13 +11,14 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import java.awt.Color
+import java.lang.IllegalArgumentException
 import java.util.*
 
-fun main(){
-    loadConfig {
-        val configuration = it ?: throw Exception("Failed to parse configuration")
+lateinit var discordToken: String
 
-        bot(configuration.token) {
+fun main(args: Array<String>){
+    discordToken = args.firstOrNull() ?: throw IllegalArgumentException()
+        bot(discordToken) {
             client { token ->
                 JDABuilder.createDefault(token)
                         .setChunkingFilter(ChunkingFilter.ALL)
@@ -24,11 +26,10 @@ fun main(){
                         .setMemberCachePolicy(MemberCachePolicy.ALL)
             }
 
-            injection {
-                inject(configuration)
-            }
-
             configure {
+                val (configuration, permission) = it.getInjectionObjects(Configuration::class,
+                        PermissionsService::class)
+
                 colors {
                     infoColor = Color.CYAN
                     failureColor = Color.RED
@@ -40,6 +41,11 @@ fun main(){
                 requiresGuild = true
 
 
+                prefix {
+                    configuration.prefix
+                }
+
+
                 mentionEmbed {
                     val discord = it.discord
                     val properties = discord.properties
@@ -49,22 +55,22 @@ fun main(){
                         discord.jda.retrieveUserById(412540774694256640).queue {
                             iconUrl = it.effectiveAvatarUrl
                             name = it.fullName()
-                            url = Links.DISCORD_ACCOUNT
+                            url = Link.DISCORD_ACCOUNT
                         }
                     }
 
                     simpleTitle = "${self.fullName()} (Taboo 0.1.0)"
-                    description = Project.BOT
+                    description = ProjectDescription.BOT
                     thumbnail = self.effectiveAvatarUrl
                     color = infoColor
 
                     addInlineField("Prefix", configuration.prefix)
-                    addInlineField("Contributors", Project.CONTRIBUTORS)
+                    addInlineField("Contributors", ProjectDescription.CONTRIBUTORS)
                     addField("Build Info", "```\n" +
                             "KUtils Version: ${properties.kutilsVersion}\n" +
                             "JDA Version: ${properties.jdaVersion}\n" +
                             "```")
-                    addField("Source", Project.REPO)
+                    addField("Source", ProjectDescription.REPO)
                 }
             }
 
@@ -74,4 +80,3 @@ fun main(){
             }
         }
     }
-}

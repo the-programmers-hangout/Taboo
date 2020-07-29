@@ -1,6 +1,6 @@
 package com.github.arkencl.taboo.locale
 
-class Project {
+class ProjectDescription {
     companion object {
         const val REPO: String = "https://github.com/the-programmers-hangout/taboo"
         const val BOT: String = "A Bot for automatic file deletion and uploading."
@@ -8,11 +8,15 @@ class Project {
     }
 }
 
-class Descriptions{}
+class Description {}
 
-class Errors{}
+class ErrorMessage {
+    companion object {
+        const val MISSING_CLEARANCE: String = "Missing clearance to use this command."
+    }
+}
 
-class Links {
+class Link {
     companion object {
         const val DISCORD_ACCOUNT: String = "https://discordapp.com/users/412540774694256640/"
     }
