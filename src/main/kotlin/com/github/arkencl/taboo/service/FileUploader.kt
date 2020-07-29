@@ -1,7 +1,6 @@
 package com.github.arkencl.taboo.service
 
-import com.github.arkencl.taboo.listener.AttachmentWrapper
-import com.github.arkencl.taboo.listener.FileMetadata
+import com.github.arkencl.taboo.dataclass.FileWrapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.kutils.api.annotations.Service
@@ -11,11 +10,11 @@ private data class HasteResponse(val key: String = "")
 @Service
 class FileUploader(){
 
-    fun uploadFile(attachmentWrapper: AttachmentWrapper): String {
-        val type = attachmentWrapper.fileMetadata.typeAlias
+    fun uploadFile(fileWrapper: FileWrapper): String {
+        val type = fileWrapper.fileMetadata.typeAlias
         return when {
             type.startsWith("text") ->
-                uploadToHastebin(attachmentWrapper.fileData.content)
+                uploadToHastebin(fileWrapper.fileData.content)
             else -> "An unknown error has occurred."
         }
     }

@@ -1,4 +1,4 @@
-package com.github.arkencl.taboo.data
+package com.github.arkencl.taboo.dataclass
 
 import com.google.gson.Gson
 import me.jakejmattson.kutils.api.dsl.data.Data

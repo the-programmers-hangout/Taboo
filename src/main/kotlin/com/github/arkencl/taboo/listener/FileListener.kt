@@ -1,22 +1,17 @@
 package com.github.arkencl.taboo.listener
 
+import com.github.arkencl.taboo.dataclass.FileWrapper
+import com.github.arkencl.taboo.dataclass.FileData
+import com.github.arkencl.taboo.dataclass.FileMetadata
 import com.github.arkencl.taboo.service.FileUploader
 import com.google.common.eventbus.Subscribe
-import me.jakejmattson.kutils.api.annotations.Service
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import net.dv8tion.jda.api.hooks.EventListener
 import org.apache.tika.Tika
 
-data class FileMetadata(val name: String,
-                        val type: String,
-                        val typeAlias: String,
-                        val isAllowed: Boolean)
-
-data class FileData(val content: String)
-
-data class AttachmentWrapper(val fileMetadata: FileMetadata,
-                             val fileData: FileData)
+enum class CommonAlias(val alias: String) {
+    DOCUMENT("text/document+code")
+}
 
 class FileListener() {
 
@@ -30,21 +25,24 @@ class FileListener() {
         attachmentWrappers.forEach { postProcessAttachment(event, it)}
     }
 
-    private fun postProcessAttachment(event: GuildMessageReceivedEvent, attachmentWrapper: AttachmentWrapper) {
-        val containsIllegalAttachment = !attachmentWrapper.fileMetadata.isAllowed
+    private fun postProcessAttachment(event: GuildMessageReceivedEvent, fileWrapper: FileWrapper) {
+        val containsIllegalAttachment = !fileWrapper.fileMetadata.isAllowed
+
+        // logger.debug { "starting post processing on message attachment on ${fileWrapper.fileMetadata.name}" +
+           //     "of type ${fileWrapper.fileMetadata.type} and alias ${fileWrapper.fileMetadata.typeAlias}" }
 
         if (containsIllegalAttachment) {
             event.message.delete().queue()
             val user = event.author.asMention
-            val type = attachmentWrapper.fileMetadata.typeAlias
+            val type = fileWrapper.fileMetadata.typeAlias
             when {
                 type.startsWith("text") -> {
                     event.channel.sendMessage("that seems to be text, uploading to hasteb.in now... <a:loading:714196361888661594>")
-                            .queue() {
-                                message -> message.editMessage(FileUploader().uploadFile(attachmentWrapper)).queue()
+                            .queue {
+                                message -> message.editMessage(FileUploader().uploadFile(fileWrapper)).queue()
                             }
                 }
-                else -> event.channel.sendMessage(responseFor(user, attachmentWrapper.fileMetadata)).queue()
+                else -> event.channel.sendMessage(responseFor(user, fileWrapper.fileMetadata)).queue()
             }
         }
     }
@@ -61,20 +59,20 @@ class FileListener() {
         return FileMetadata(attachment.fileName, type, commonAliasFor(type), isAllowed(type))
     }
 
-    private fun attachmentWrapperOf(attachment: Message.Attachment): AttachmentWrapper {
-        return AttachmentWrapper(metadataOf(attachment), getContent(attachment))
+    private fun attachmentWrapperOf(attachment: Message.Attachment): FileWrapper {
+        return FileWrapper(metadataOf(attachment), getContent(attachment))
     }
 
     private fun commonAliasFor(type: String): String {
         return when {
             type == "application/x-tika-ooxml" -> "documents"
             type == "application/pdf" -> "pdf files"
-            type == "application/xml" -> "text/document"
-            type == "application/json" -> "text/document"
-            type == "application/ld+json" -> "text/document"
-            type == "application/xhtml+xml" -> "text/document"
+            type == "application/xml" -> CommonAlias.DOCUMENT.alias
+            type == "application/json" -> CommonAlias.DOCUMENT.alias
+            type == "application/ld+json" -> CommonAlias.DOCUMENT.alias
+            type == "application/xhtml+xml" -> CommonAlias.DOCUMENT.alias
             type.startsWith("application") -> "binaries"
-            type.startsWith("text") -> "text/document+code"
+            type.startsWith("text") -> CommonAlias.DOCUMENT.alias
             else -> "those types of files"
         }
     }
