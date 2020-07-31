@@ -4,6 +4,7 @@ import com.github.arkencl.taboo.dataclasses.Configuration
 import com.github.arkencl.taboo.dataclasses.FileData
 import com.github.arkencl.taboo.dataclasses.FileMetadata
 import com.github.arkencl.taboo.dataclasses.FileWrapper
+import com.github.arkencl.taboo.locale.Description
 import com.github.arkencl.taboo.services.FileUploader
 import com.github.arkencl.taboo.services.PermissionLevel
 import com.github.arkencl.taboo.services.PermissionsService
@@ -46,7 +47,14 @@ class FileListener(private val configuration: Configuration, private val permiss
                                 message -> message.editMessage(FileUploader().uploadFile(fileWrapper)).queue()
                             }
                 }
-                else -> event.channel.sendMessage(responseFor(user, fileWrapper.fileMetadata)).queue()
+                else -> {
+                    val guildConfiguration = configuration.getGuildConfig(event.guild.id) ?: return
+                    event.guild.getTextChannelById(guildConfiguration.logChannel)!!
+                            .sendMessage(Description.INVALID_FILE_TYPE + fileWrapper.fileMetadata.name
+                                    + " of type ${fileWrapper.fileMetadata.type}"
+                                    + " by member ${event.author.asMention} in ${event.channel.asMention}").queue()
+                    event.channel.sendMessage(responseFor(user, fileWrapper.fileMetadata)).queue()
+                }
             }
         }
     }

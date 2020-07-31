@@ -4,6 +4,7 @@
   "guildConfigurations": [{
     "guildId": "<insert-your-guild-id>",
     "requiredRole": "<required-role-for-moderation>",
-    "sendUnfilteredFiles": "<permission_level>"
+    "sendUnfilteredFiles": "<permission-level>",
+    "logChannel": "<channel-to-log-taboo-messages>",
   }]
 }

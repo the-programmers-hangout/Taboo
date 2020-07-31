@@ -5,8 +5,8 @@ import me.jakejmattson.discordkt.api.annotations.Service
 import net.dv8tion.jda.api.entities.Member
 
 enum class PermissionLevel {
-    GUILD_OWNER,
     BOT_OWNER,
+    GUILD_OWNER,
     STAFF,
     NONE
 }

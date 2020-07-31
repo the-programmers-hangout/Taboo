@@ -13,8 +13,9 @@ data class Configuration(val token: String = "",
 }
 
 data class GuildConfiguration(val guildId: String = "insert-your-id",
-                              var requiredRole: String = "Staff",
-                              var sendUnfilteredFiles: String = "Staff")
+                              var requiredRole: String = "",
+                              var sendUnfilteredFiles: String = "",
+                              var logChannel: String = "")
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")

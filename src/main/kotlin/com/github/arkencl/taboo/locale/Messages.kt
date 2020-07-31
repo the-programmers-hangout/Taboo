@@ -8,7 +8,11 @@ class ProjectDescription {
     }
 }
 
-class Description {}
+class Description {
+    companion object {
+        const val INVALID_FILE_TYPE = "Message was deleted for invalid file type: "
+    }
+}
 
 class ErrorMessage {
     companion object {
