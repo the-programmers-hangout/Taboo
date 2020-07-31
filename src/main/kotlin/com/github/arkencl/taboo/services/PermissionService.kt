@@ -1,14 +1,14 @@
 package com.github.arkencl.taboo.services
 
 import com.github.arkencl.taboo.dataclasses.Configuration
-import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.discordkt.api.annotations.Service
 import net.dv8tion.jda.api.entities.Member
 
 enum class PermissionLevel {
-    NONE,
-    STAFF,
     GUILD_OWNER,
-    BOT_OWNER
+    BOT_OWNER,
+    STAFF,
+    NONE
 }
 
 var DEFAULT_REQUIRED_PERMISSION = PermissionLevel.STAFF

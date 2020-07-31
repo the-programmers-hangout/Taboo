@@ -4,12 +4,12 @@ import com.github.arkencl.taboo.extensions.requiredPermissionLevel
 import com.github.arkencl.taboo.locale.ErrorMessage
 import com.github.arkencl.taboo.services.PermissionLevel
 import com.github.arkencl.taboo.services.PermissionsService
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.preconditions.Fail
-import me.jakejmattson.kutils.api.dsl.preconditions.Pass
-import me.jakejmattson.kutils.api.dsl.preconditions.Precondition
-import me.jakejmattson.kutils.api.dsl.preconditions.PreconditionResult
-import me.jakejmattson.kutils.api.extensions.jda.toMember
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.preconditions.Fail
+import me.jakejmattson.discordkt.api.dsl.preconditions.Pass
+import me.jakejmattson.discordkt.api.dsl.preconditions.Precondition
+import me.jakejmattson.discordkt.api.dsl.preconditions.PreconditionResult
+import me.jakejmattson.discordkt.api.extensions.jda.toMember
 
 class PermissionPrecondition(private val permissionsService: PermissionsService) : Precondition() {
     override fun evaluate(event: CommandEvent<*>): PreconditionResult {

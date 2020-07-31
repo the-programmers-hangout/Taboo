@@ -1,24 +1,22 @@
 package com.github.arkencl.taboo
 
-import com.github.arkencl.taboo.dataclasses.Configuration
+import com.github.arkencl.taboo.dataclasses.loadConfig
 import com.github.arkencl.taboo.locale.Link
 import com.github.arkencl.taboo.locale.ProjectDescription
-import com.github.arkencl.taboo.services.PermissionsService
-import me.jakejmattson.kutils.api.dsl.bot
-import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.dsl.bot
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import java.awt.Color
-import java.lang.IllegalArgumentException
 import java.util.*
 
-lateinit var discordToken: String
 
-fun main(args: Array<String>){
-    discordToken = args.firstOrNull() ?: throw IllegalArgumentException()
-        bot(discordToken) {
+fun main(){
+    loadConfig {
+        val config = it ?: throw Exception("Failed to parse configuration")
+        bot(config.token) {
             client { token ->
                 JDABuilder.createDefault(token)
                         .setChunkingFilter(ChunkingFilter.ALL)
@@ -27,8 +25,6 @@ fun main(args: Array<String>){
             }
 
             configure {
-                val (configuration, permission) = it.getInjectionObjects(Configuration::class,
-                        PermissionsService::class)
 
                 colors {
                     infoColor = Color.CYAN
@@ -42,7 +38,7 @@ fun main(args: Array<String>){
 
 
                 prefix {
-                    configuration.prefix
+                    config.prefix
                 }
 
 
@@ -64,10 +60,10 @@ fun main(args: Array<String>){
                     thumbnail = self.effectiveAvatarUrl
                     color = infoColor
 
-                    addInlineField("Prefix", configuration.prefix)
+                    addInlineField("Prefix", config.prefix)
                     addInlineField("Contributors", ProjectDescription.CONTRIBUTORS)
                     addField("Build Info", "```\n" +
-                            "KUtils Version: ${properties.kutilsVersion}\n" +
+                            "DiscordKt Version: ${properties.libraryVersion}\n" +
                             "JDA Version: ${properties.jdaVersion}\n" +
                             "```")
                     addField("Source", ProjectDescription.REPO)
@@ -80,3 +76,4 @@ fun main(args: Array<String>){
             }
         }
     }
+}

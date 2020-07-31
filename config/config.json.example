@@ -1,0 +1,9 @@
+{
+  "token": "<insert-your-discord-bot-token>",
+  "ownerId": "<discord-id-of-the-bot-owner>",
+  "guildConfigurations": [{
+    "guildId": "<insert-your-guild-id>",
+    "requiredRole": "<required-role-for-moderation>",
+    "sendUnfilteredFiles": "<permission_level>"
+  }]
+}

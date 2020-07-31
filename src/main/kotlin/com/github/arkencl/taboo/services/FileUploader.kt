@@ -3,7 +3,7 @@ package com.github.arkencl.taboo.services
 import com.github.arkencl.taboo.dataclasses.FileWrapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
-import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.discordkt.api.annotations.Service
 
 private data class HasteResponse(val key: String = "")
 

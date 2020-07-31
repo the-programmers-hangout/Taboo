@@ -2,9 +2,12 @@ version: '3.7'
 
 services:
   taboo:
+    container_name: taboo
     build: .
     volumes:
-      - guild_data:/home/app/data
+      - type: bind
+        source: ./config/config.json
+        target: /home/app/config.json
     restart: unless-stopped
 volumes:
-  guild_data: {}
+  config: {}

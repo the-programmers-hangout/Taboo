@@ -2,8 +2,8 @@ package com.github.arkencl.taboo.extensions
 
 import com.github.arkencl.taboo.services.DEFAULT_REQUIRED_PERMISSION
 import com.github.arkencl.taboo.services.PermissionLevel
-import me.jakejmattson.kutils.api.dsl.command.Command
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.command.Command
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import java.util.*
 
 fun CommandEvent<*>.reactSuccess() = message.addReaction("✅").queue()

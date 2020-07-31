@@ -1,7 +1,11 @@
 package com.github.arkencl.taboo.listeners
 
-import com.github.arkencl.taboo.dataclasses.*
+import com.github.arkencl.taboo.dataclasses.Configuration
+import com.github.arkencl.taboo.dataclasses.FileData
+import com.github.arkencl.taboo.dataclasses.FileMetadata
+import com.github.arkencl.taboo.dataclasses.FileWrapper
 import com.github.arkencl.taboo.services.FileUploader
+import com.github.arkencl.taboo.services.PermissionLevel
 import com.github.arkencl.taboo.services.PermissionsService
 import com.google.common.eventbus.Subscribe
 import net.dv8tion.jda.api.entities.Message
@@ -22,7 +26,7 @@ class FileListener(private val configuration: Configuration, private val permiss
 
         if (event.author.isBot || event.message.attachments.isEmpty()) return
 
-        if (permissionsService.hasClearance(event.member!!, guildConfiguration.sendUnfilteredFiles)) return
+        if (permissionsService.hasClearance(event.member!!, PermissionLevel.valueOf(guildConfiguration.sendUnfilteredFiles))) return
 
         val attachmentWrappers = message.attachments.map { attachmentWrapperOf(it) }
         attachmentWrappers.forEach { postProcessAttachment(event, it)}
