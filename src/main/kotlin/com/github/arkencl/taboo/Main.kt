@@ -1,8 +1,10 @@
 package com.github.arkencl.taboo
 
 import com.github.arkencl.taboo.dataclasses.loadConfig
+import com.github.arkencl.taboo.listeners.FileListener
 import com.github.arkencl.taboo.locale.Link
 import com.github.arkencl.taboo.locale.ProjectDescription
+import com.github.arkencl.taboo.services.PermissionsService
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import net.dv8tion.jda.api.JDABuilder
@@ -25,7 +27,6 @@ fun main(){
             }
 
             configure {
-
                 colors {
                     infoColor = Color.CYAN
                     failureColor = Color.RED
@@ -36,11 +37,9 @@ fun main(){
                 allowMentionPrefix = true
                 requiresGuild = true
 
-
                 prefix {
                     config.prefix
                 }
-
 
                 mentionEmbed {
                     val discord = it.discord
@@ -70,6 +69,9 @@ fun main(){
                 }
             }
 
+            injection {
+                inject(config)
+            }
 
             logging {
                 generateCommandDocs = false

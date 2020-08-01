@@ -9,28 +9,37 @@ import com.github.arkencl.taboo.services.FileUploader
 import com.github.arkencl.taboo.services.PermissionLevel
 import com.github.arkencl.taboo.services.PermissionsService
 import com.google.common.eventbus.Subscribe
+import me.jakejmattson.discordkt.api.annotations.Service
+import mu.KotlinLogging
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.hooks.SubscribeEvent
 import org.apache.tika.Tika
 
 enum class CommonAlias(val alias: String) {
     DOCUMENT("text/document+code")
 }
 
-class FileListener(private val configuration: Configuration, private val permissionsService: PermissionsService) {
+class FileListener (private val configuration: Configuration, private val permissionsService: PermissionsService) {
+
+    private val logger = KotlinLogging.logger {}
 
     @Subscribe
     fun onMessageReceived(event: GuildMessageReceivedEvent){
+        logger.info { "1" }
         val guildConfiguration = configuration.getGuildConfig(event.guild.id) ?: return
-
+        logger.info { "2" }
         val message = event.message
-
+        logger.info { "3" }
         if (event.author.isBot || event.message.attachments.isEmpty()) return
-
+        logger.info { "4" }
         if (permissionsService.hasClearance(event.member!!, PermissionLevel.valueOf(guildConfiguration.sendUnfilteredFiles))) return
-
+        logger.info { "5" }
         val attachmentWrappers = message.attachments.map { attachmentWrapperOf(it) }
+        logger.info { "6" }
         attachmentWrappers.forEach { postProcessAttachment(event, it)}
+        logger.info { "7" }
     }
 
     private fun postProcessAttachment(event: GuildMessageReceivedEvent, fileWrapper: FileWrapper) {
