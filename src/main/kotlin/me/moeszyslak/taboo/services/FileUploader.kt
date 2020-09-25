@@ -1,14 +1,14 @@
-package com.github.arkencl.taboo.services
+package me.moeszyslak.taboo.services
 
-import com.github.arkencl.taboo.dataclasses.FileWrapper
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.discordkt.api.annotations.Service
+import me.moeszyslak.taboo.data.FileWrapper
 
-private data class HasteResponse(val key: String = "")
+data class HasteResponse(val key: String = "")
 
 @Service
-class FileUploader(){
+class FileUploader{
 
     fun uploadFile(fileWrapper: FileWrapper): String {
         val type = fileWrapper.fileMetadata.typeAlias
@@ -19,7 +19,7 @@ class FileUploader(){
         }
     }
 
-    private fun uploadToHastebin(fileContent: String): String {
+    fun uploadToHastebin(fileContent: String): String {
         val bodyJson: String = fileContent.trimIndent()
 
         val (request, response, result) = Fuel
@@ -28,7 +28,7 @@ class FileUploader(){
                 .body(bodyJson)
                 .responseObject<HasteResponse>()
 
-        result.fold(
+        result.fold<Nothing>(
                 success = {
                     return "File uploaded to hasteb.in: https://hasteb.in/${it.key}"
                 },
@@ -38,4 +38,3 @@ class FileUploader(){
                 })
     }
 }
-
