@@ -19,10 +19,10 @@ class FileUploader{
         }
     }
 
-    fun uploadToHastebin(fileContent: String): String {
+    private fun uploadToHastebin(fileContent: String): String {
         val bodyJson: String = fileContent.trimIndent()
 
-        val (request, response, result) = Fuel
+        val (_, _, result) = Fuel
                 .post("https://hasteb.in/documents")
                 .set("User-Agent", "The Programmers Hangout (https://github.com/the-programmers-hangout/)")
                 .body(bodyJson)

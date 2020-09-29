@@ -15,7 +15,13 @@ data class Configuration(
     fun setup(guild: Guild, prefix: String, logChannel: Channel, staffRole: Role) {
         if (guildConfigurations[guild.id.longValue] != null) return
 
-        val newConfiguration = GuildConfiguration(logChannel.id.longValue, prefix, staffRole.id.longValue, mutableSetOf())
+        val newConfiguration = GuildConfiguration(
+                logChannel.id.longValue,
+                prefix,
+                staffRole.id.longValue,
+                mutableSetOf(),
+                mutableSetOf()
+        )
 
         guildConfigurations[guild.id.longValue] = newConfiguration
         save()
@@ -26,5 +32,6 @@ data class GuildConfiguration(
         var logChannel: Long,
         var prefix: String,
         var staffRole: Long,
-        var ignoredRoles: MutableSet<Long>
+        var ignoredRoles: MutableSet<Long>,
+        var ignoredMimes: MutableSet<String>
 )

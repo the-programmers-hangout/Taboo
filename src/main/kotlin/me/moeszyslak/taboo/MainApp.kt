@@ -3,10 +3,7 @@ package me.moeszyslak.taboo
 import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
-import me.jakejmattson.discordkt.api.extensions.*
 import me.moeszyslak.taboo.data.Configuration
-import me.moeszyslak.taboo.extensions.requiredPermissionLevel
-import me.moeszyslak.taboo.services.PermissionsService
 import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
@@ -43,7 +40,7 @@ suspend fun main(args: Array<String>) {
             val guildConfiguration = configuration[it.guild!!.id.longValue]
 
             val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration!!.staffRole))
-            val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration!!.logChannel))
+            val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
@@ -100,15 +97,14 @@ suspend fun main(args: Array<String>) {
             }
         }
 
-        //Determine if the given command can be run with these conditions.
-        permissions {
-            val guild = guild ?: return@permissions false
-            val member = user.asMember(guild.id)
-            val permission = command.requiredPermissionLevel
-
-            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-
-            permissionsService.hasClearance(member, permission)
-        }
+        // This probably should work but currently it shows unknown command rather than just not responding
+//        permissions {
+//            val requiredPermissionLevel = command.requiredPermissionLevel
+//            val guild = guild ?: return@permissions false
+//            val member = user.asMember(guild.id)
+//
+//            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
+//            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
+//        }
     }
 }

@@ -2,45 +2,40 @@ package me.moeszyslak.taboo.services
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Attachment
+import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.Message
-import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileData
 import me.moeszyslak.taboo.data.FileMetadata
 import me.moeszyslak.taboo.data.FileWrapper
 import org.apache.tika.Tika
-import java.io.ByteArrayInputStream
-
-enum class CommonAlias(val alias: String) {
-    DOCUMENT("text/document+code")
-}
+import org.apache.tika.config.TikaConfig
 
 @Service
-class FileTypeService(private val configuration: Configuration) {
+class FileTypeService(private val configuration: Configuration, private val loggerService: LoggerService) {
 
     suspend fun handleMessage(message: Message) {
 
-        val metadataList = message.attachments.map { metadataOf(it) }
+        val metadataList = message.attachments.map { metadataOf(it, message.getGuild()) }
 
         metadataList.forEach { fileWrapper ->
             if (fileWrapper == null) return@forEach
             if (fileWrapper.fileMetadata.isAllowed) return@forEach
 
             val user = message.author!!.mention
+            val member = message.getAuthorAsMember()!!
             val type = fileWrapper.fileMetadata.type
             val channel = message.getChannel()
+            val guild = message.getGuild()
 
             message.delete()
 
-            val guildConfiguration = configuration[message.getGuild().id.longValue] ?: return@forEach
-//            val logChannel = discord.api.getChannel(Snowflake(guildConfiguration.logChannel)) ?: return@forEach
-
             when {
                 type.startsWith("text") -> {
+                    loggerService.logUploaded(guild, member, channel, fileWrapper)
                     val sentMessage = channel.createMessage("uploading to hasteb.in")
 
                     sentMessage.edit {
@@ -48,6 +43,7 @@ class FileTypeService(private val configuration: Configuration) {
                     }
                 }
                 else -> {
+                    loggerService.logDeleted(guild, member, channel, fileWrapper)
                     channel.createMessage(responseFor(user, fileWrapper.fileMetadata.typeAlias))
                 }
             }
@@ -58,32 +54,32 @@ class FileTypeService(private val configuration: Configuration) {
     }
 
 
-
-    private fun metadataOf(attachment: Attachment): FileWrapper? {
+    private fun metadataOf(attachment: Attachment, guild: Guild): FileWrapper? {
         val contents = getFile(attachment.url) ?: return null
         val dataStream = contents.byteInputStream()
         val type = Tika().detect(dataStream)
 
-        val metadata = FileMetadata(attachment.filename, type, commonAliasFor(type), isAllowed(type))
+        val metadata = FileMetadata(attachment.filename, type, commonAliasFor(type), isAllowed(type, guild))
         val fileData = FileData(contents)
 
         return FileWrapper(metadata, fileData)
     }
 
 
+    private fun isAllowed(type: String, guild: Guild): Boolean {
+        val config = configuration[guild.id.longValue] ?: return false
 
-    private fun isAllowed (type: String): Boolean {
-        return type.startsWith("image") || type.startsWith("video") || type.startsWith("audio")
+        return config.ignoredMimes.contains(type)
     }
 
     private fun commonAliasFor(type: String): String {
-        return when (type) {
-            "application/xml" -> CommonAlias.DOCUMENT.alias
-            "application/json" -> CommonAlias.DOCUMENT.alias
-            "application/ld+json" -> CommonAlias.DOCUMENT.alias
-            "application/xhtml+xml" -> CommonAlias.DOCUMENT.alias
-            else -> "those types of files"
-        }
+
+        val mimeType = TikaConfig().mimeRepository.forName(type)
+
+        if (mimeType.acronym.isBlank())
+            return "those type of files"
+
+        return mimeType.acronym + " files"
     }
 
     private fun responseFor(author: String, typeAlias: String): String {
