@@ -1,13 +1,17 @@
-version: '3.7'
-
+version: '3.8'
 services:
   taboo:
-    container_name: taboo
-    build: .
+    container_name: Taboo
+    build:
+      dockerfile: Dockerfile
+      context: .
     volumes:
       - type: bind
         source: ./config/config.json
-        target: /home/app/config.json
-    restart: unless-stopped
+        target: /config/config.json
+    restart: always
+    env_file:
+      - .env
+
 volumes:
-  config: {}
+  app:
