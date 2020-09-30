@@ -18,7 +18,7 @@ $ docker-compose up --build --detatch
 ```
 
 ## Author
- **Georg Göring**
+👤 **Georg Göring**
 * Github: [@arkencl](https://github.com/arkencl)
 
 👤 **Moe Szyslak**
