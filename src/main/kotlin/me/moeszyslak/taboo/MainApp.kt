@@ -9,19 +9,16 @@ import java.awt.Color
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
-suspend fun main(args: Array<String>) {
-    //Get the bot token from the command line (or your preferred way).
-    val token = args.firstOrNull()
-    require(token != null) { "Expected the bot token as a command line argument!" }
+suspend fun main() {
+    val token = System.getenv("BOT_TOKEN") ?: null
+    val prefix = System.getenv("DEFAULT_PREFIX") ?: "<none>"
+    require(token != null) { "Expected the bot token as an environment variable" }
 
-    //Start the bot and set configuration options.
     bot(token) {
-
-
 
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id.longValue]?.prefix } ?: "<none>"
+            guild?.let { configuration[it.id.longValue]?.prefix } ?: prefix
         }
 
         configure {
