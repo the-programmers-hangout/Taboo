@@ -14,7 +14,7 @@ $ cp .env.example .env
 ```
 Edit the .env file with your favourite editor, filling out the token and default prefix
 ```
-$ docker-compose up --build --detatch
+$ docker-compose up --build --detach
 ```
 
 ## Author
