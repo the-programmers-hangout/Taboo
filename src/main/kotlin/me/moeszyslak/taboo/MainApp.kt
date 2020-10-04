@@ -4,6 +4,8 @@ import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
+import me.moeszyslak.taboo.extensions.requiredPermissionLevel
+import me.moeszyslak.taboo.services.PermissionsService
 import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
@@ -93,14 +95,13 @@ suspend fun main() {
             }
         }
 
-        // This probably should work but currently it shows unknown command rather than just not responding
-//        permissions {
-//            val requiredPermissionLevel = command.requiredPermissionLevel
-//            val guild = guild ?: return@permissions false
-//            val member = user.asMember(guild.id)
-//
-//            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-//            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
-//        }
+        permissions {
+            val requiredPermissionLevel = command.requiredPermissionLevel
+            val guild = guild ?: return@permissions false
+            val member = user.asMember(guild.id)
+
+            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
+            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
+        }
     }
 }
