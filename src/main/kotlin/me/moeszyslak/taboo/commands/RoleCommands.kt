@@ -9,15 +9,17 @@ import me.moeszyslak.taboo.services.Permission
 import java.awt.Color
 
 fun roleCommands(configuration: Configuration) = commands("Roles Configuration") {
-    command("IgnoreRole") {
+    guildCommand("IgnoreRole") {
         description = "Add a role to the ignored list."
         requiredPermissionLevel = Permission.STAFF
         execute(RoleArg) {
             val role = args.first
-            val config = configuration[(guild!!.id.longValue)] ?: return@execute
+            val config = configuration[(guild.id.longValue)] ?: return@execute
 
-            if (config.ignoredRoles.contains(role.id.longValue))
-                return@execute respond("${role.name} is already being ignored")
+            if (config.ignoredRoles.contains(role.id.longValue)) {
+                respond("${role.name} is already being ignored")
+                return@execute
+            }
 
             config.ignoredRoles.add(role.id.longValue)
             configuration.save()
@@ -26,15 +28,17 @@ fun roleCommands(configuration: Configuration) = commands("Roles Configuration")
         }
     }
 
-    command("UnignoreRole") {
+    guildCommand("UnignoreRole") {
         description = "Remove a role from the ignored list."
         requiredPermissionLevel = Permission.STAFF
         execute(RoleArg) {
             val role = args.first
-            val config = configuration[(guild!!.id.longValue)] ?: return@execute
+            val config = configuration[(guild.id.longValue)] ?: return@execute
 
-            if (!config.ignoredRoles.contains(role.id.longValue))
-                return@execute respond("${role.name} is not being ignored")
+            if (!config.ignoredRoles.contains(role.id.longValue)) {
+                respond("${role.name} is not being ignored")
+                return@execute
+            }
 
             config.ignoredRoles.remove(role.id.longValue)
             configuration.save()
@@ -43,12 +47,12 @@ fun roleCommands(configuration: Configuration) = commands("Roles Configuration")
         }
     }
 
-    command("IgnoredRoles") {
+    guildCommand("IgnoredRoles") {
         description = "View all currently ignored roles."
         requiredPermissionLevel = Permission.STAFF
         execute {
-            val config = configuration[(guild!!.id.longValue)] ?: return@execute
 
+            val config = configuration[(guild.id.longValue)] ?: return@execute
 
             respond {
                 title = "Currently ignored roles"
@@ -61,7 +65,7 @@ fun roleCommands(configuration: Configuration) = commands("Roles Configuration")
                 } else {
                     color = Color(0xDB5F96)
                     val roles = config.ignoredRoles.map { ignoredRole ->
-                        guild!!.getRole(Snowflake(ignoredRole)).mention
+                        guild.getRole(Snowflake(ignoredRole)).mention
                     }
 
                     field {

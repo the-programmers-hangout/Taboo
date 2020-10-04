@@ -9,15 +9,18 @@ import java.awt.Color
 
 fun mimeConfiguration(configuration: Configuration) = commands("Mime Configuration") {
 
-    command("IgnoreMime") {
+    guildCommand("IgnoreMime") {
         description = "Add a mime to the ignored list."
         requiredPermissionLevel = Permission.STAFF
         execute(EveryArg) {
+
             val mime = args.first
             val config = configuration[(guild!!.id.longValue)] ?: return@execute
 
-            if (config.ignoredMimes.contains(mime))
-                return@execute respond("$mime is already being ignored")
+            if (config.ignoredMimes.contains(mime)) {
+                respond("$mime is already being ignored")
+                return@execute
+            }
 
             config.ignoredMimes.add(mime)
             configuration.save()
@@ -26,15 +29,18 @@ fun mimeConfiguration(configuration: Configuration) = commands("Mime Configurati
         }
     }
 
-    command("UnignoreMime") {
+    guildCommand("UnignoreMime") {
         description = "Remove a mime from the ignored list."
         requiredPermissionLevel = Permission.STAFF
         execute(EveryArg) {
-            val mime = args.first
-            val config = configuration[(guild!!.id.longValue)] ?: return@execute
 
-            if (!config.ignoredMimes.contains(mime))
-                return@execute respond("$mime is not being ignored")
+            val mime = args.first
+            val config = configuration[(guild.id.longValue)] ?: return@execute
+
+            if (!config.ignoredMimes.contains(mime)) {
+                respond("$mime is not being ignored")
+                return@execute
+            }
 
             config.ignoredMimes.remove(mime)
             configuration.save()
@@ -43,7 +49,7 @@ fun mimeConfiguration(configuration: Configuration) = commands("Mime Configurati
         }
     }
 
-    command("IgnoredMimes") {
+    guildCommand("IgnoredMimes") {
         description = "View all currently ignored mimes."
         requiredPermissionLevel = Permission.STAFF
         execute {

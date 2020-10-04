@@ -25,7 +25,6 @@ suspend fun main() {
             allowMentionPrefix = true
             generateCommandDocs = true
             showStartupLog = true
-            requiresGuild = true
             commandReaction = Emojis.eyes
             theme = Color(0x00BFFF)
         }
