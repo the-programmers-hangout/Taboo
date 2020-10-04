@@ -28,10 +28,10 @@ tasks {
     }
 
     shadowJar {
-        archiveFileName.set("EmbedBot.jar")
+        archiveFileName.set("Taboo.jar")
         manifest {
             attributes(
-                    "Main-Class" to "me.jakejmattson.embedbot.MainAppKt"
+                    "Main-Class" to "me.moeszyslak.taboo.MainAppKt"
             )
         }
     }
