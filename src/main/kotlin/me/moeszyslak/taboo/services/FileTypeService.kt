@@ -36,7 +36,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
             when {
                 type.startsWith("text") -> {
                     loggerService.logUploaded(guild, member, channel, fileWrapper)
-                    val sentMessage = channel.createMessage("uploading to hasteb.in")
+                    val sentMessage = channel.createMessage("uploading to pastecord...")
 
                     sentMessage.edit {
                         content = FileUploader().uploadFile(fileWrapper)
@@ -87,7 +87,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
     }
 
     private fun getFile(url: String): String? {
-        val (request, response, result) = url
+        val (_, _, result) = url
                 .httpGet()
                 .responseString()
 

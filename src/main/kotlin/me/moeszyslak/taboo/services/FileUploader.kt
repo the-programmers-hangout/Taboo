@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.FileWrapper
 
-data class HasteResponse(val key: String = "")
+data class PasteResponse(val key: String = "")
 
 @Service
 class FileUploader{
@@ -23,18 +23,18 @@ class FileUploader{
         val bodyJson: String = fileContent.trimIndent()
 
         val (_, _, result) = Fuel
-                .post("https://hasteb.in/documents")
+                .post("https://pastecord.com/documents")
                 .set("User-Agent", "The Programmers Hangout (https://github.com/the-programmers-hangout/)")
                 .body(bodyJson)
-                .responseObject<HasteResponse>()
+                .responseObject<PasteResponse>()
 
         result.fold<Nothing>(
                 success = {
-                    return "File uploaded to hasteb.in: https://hasteb.in/${it.key}"
+                    return "File uploaded to pastecord: https://pastecord.com/${it.key}"
                 },
 
                 failure = {
-                    return "Unable to upload file to hasteb.in: ${it.localizedMessage}"
+                    return "Unable to upload file to pastecord: ${it.localizedMessage}"
                 })
     }
 }
