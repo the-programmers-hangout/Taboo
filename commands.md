@@ -5,6 +5,12 @@
 | ----------- | ------------------------------ |
 | (Argument)  | Argument is not required.      |
 
+## Configuration
+| Commands     | Arguments                      | Description                                                          |
+| ------------ | ------------------------------ | -------------------------------------------------------------------- |
+| IgnoredRoles | (ignore/unignore/list), (Role) | List ignored roles and ignore/unignore roles from the exclusion list |
+| Mime         | (add/remove/list), (Text)      | List mimes and add/remove mimes from the ignore list                 |
+
 ## GuildConfiguration
 | Commands   | Arguments    | Description                                                |
 | ---------- | ------------ | ---------------------------------------------------------- |
@@ -12,20 +18,6 @@
 | Prefix     | Prefix       | Set the prefix required for the bot to register a command. |
 | Setup      |              | Setup a guild to use Taboo                                 |
 | StaffRole  | Role         | Set the role required to use this bot.                     |
-
-## Mime Configuration
-| Commands     | Arguments | Description                          |
-| ------------ | --------- | ------------------------------------ |
-| IgnoreMime   | Text      | Add a mime to the ignored list.      |
-| IgnoredMimes |           | View all currently ignored mimes.    |
-| UnignoreMime | Text      | Remove a mime from the ignored list. |
-
-## Roles Configuration
-| Commands     | Arguments | Description                          |
-| ------------ | --------- | ------------------------------------ |
-| IgnoreRole   | Role      | Add a role to the ignored list.      |
-| IgnoredRoles |           | View all currently ignored roles.    |
-| UnignoreRole | Role      | Remove a role from the ignored list. |
 
 ## Utility
 | Commands | Arguments | Description          |
