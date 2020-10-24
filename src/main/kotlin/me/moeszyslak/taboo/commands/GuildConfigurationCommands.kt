@@ -4,13 +4,12 @@ import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.arguments.ChannelArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.services.ConversationService
 import me.moeszyslak.taboo.conversations.ConfigurationConversation
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.extensions.requiredPermissionLevel
 import me.moeszyslak.taboo.services.Permission
 
-fun guildConfigurationCommands(configuration: Configuration, conversationService: ConversationService) = commands("GuildConfiguration") {
+fun guildConfigurationCommands(configuration: Configuration) = commands("GuildConfiguration") {
 
     guildCommand("Setup") {
         description = "Setup a guild to use Taboo"
@@ -21,8 +20,10 @@ fun guildConfigurationCommands(configuration: Configuration, conversationService
                 return@execute
             }
 
+            ConfigurationConversation(configuration)
+                    .createConfigurationConversation(guild)
+                    .startPublicly(discord, author, channel)
 
-            conversationService.startPublicConversation<ConfigurationConversation>(author, channel.asChannel(), guild)
             respond("${guild.name} has been setup")
         }
     }
@@ -63,10 +64,10 @@ fun guildConfigurationCommands(configuration: Configuration, conversationService
             val logChannel = args.first
             val config = configuration[(guild.id.longValue)] ?: return@execute
 
-            config.staffRole = logChannel.id.longValue
+            config.logChannel = logChannel.id.longValue
             configuration.save()
 
-            respond("Required role set to ${logChannel.name}")
+            respond("Logging channel set to ${logChannel.name}")
         }
     }
 }

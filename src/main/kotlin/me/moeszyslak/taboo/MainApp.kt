@@ -37,9 +37,6 @@ suspend fun main() {
             val statsService = it.discord.getInjectionObjects(StatisticsService::class)
             val guildConfiguration = configuration[it.guild!!.id.longValue]
 
-            val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration!!.staffRole))
-            val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
-
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
 
@@ -61,14 +58,19 @@ suspend fun main() {
                 inline = true
             }
 
-            field {
+            if (guildConfiguration != null) {
+                val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration.staffRole))
+                val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
+                field {
 
-                name = "Configuration"
-                value = "```" +
-                        "Staff Role: ${staffRole.name}\n" +
-                        "Logging Channel: ${loggingChannel.name}\n" +
-                        "```"
+                    name = "Configuration"
+                    value = "```" +
+                            "Staff Role: ${staffRole.name}\n" +
+                            "Logging Channel: ${loggingChannel.name}\n" +
+                            "```"
+                }
             }
+
 
             field {
                 val versions = it.discord.versions

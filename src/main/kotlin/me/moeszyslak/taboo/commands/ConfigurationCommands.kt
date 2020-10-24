@@ -1,8 +1,9 @@
 package me.moeszyslak.taboo.commands
 
 import com.gitlab.kordlib.common.entity.Snowflake
+import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.arguments.ChoiceArg
-import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.MultipleArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.moeszyslak.taboo.data.Configuration
@@ -92,10 +93,10 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         description = "List mimes and add/remove mimes from the ignore list"
         requiredPermissionLevel = Permission.STAFF
         execute(ChoiceArg("add/remove/list", "add", "remove", "list").makeOptional("list"),
-                EveryArg.makeNullableOptional(null)) {
+                MultipleArg(AnyArg).makeNullableOptional(null)) {
 
             val (choice, mime) = args
-            val config = configuration[(guild.id.longValue)] ?: return@execute
+            val config = configuration[guild.id.longValue] ?: return@execute
 
             when (choice) {
                 "add" -> {
@@ -105,15 +106,17 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         return@execute
                     }
 
-                    if (config.ignoredMimes.contains(mime)) {
-                        respond("$mime is already being ignored")
-                        return@execute
+                    mime.forEach {
+                        if (config.ignoredMimes.contains(it)) {
+                            respond("$it is already being ignored")
+                            return@execute
+                        }
                     }
 
-                    config.ignoredMimes.add(mime)
+                    mime.forEach { config.ignoredMimes.add(it) }
                     configuration.save()
 
-                    respond("$mime added to the ignore list")
+                    respond("${mime.joinToString()} added to the ignore list")
                 }
 
                 "remove" -> {
@@ -123,15 +126,17 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         return@execute
                     }
 
-                    if (!config.ignoredMimes.contains(mime)) {
-                        respond("$mime is not being ignored")
-                        return@execute
+                    mime.forEach {
+                        if (!config.ignoredMimes.contains(it)) {
+                            respond("$it is not being ignored")
+                            return@execute
+                        }
                     }
 
-                    config.ignoredMimes.remove(mime)
+                    mime.forEach { config.ignoredMimes.remove(it) }
                     configuration.save()
 
-                    respond("$mime removed to the ignore list")
+                    respond("${mime.joinToString()} removed to the ignore list")
                 }
 
                 "list" -> {
