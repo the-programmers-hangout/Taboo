@@ -11,15 +11,10 @@ data class PasteResponse(val key: String = "")
 class FileUploader{
 
     fun uploadFile(fileWrapper: FileWrapper): String {
-        val type = fileWrapper.fileMetadata.type
-        return when {
-            type.startsWith("text") ->
-                uploadToHastebin(fileWrapper.fileData.content)
-            else -> "An unknown error has occurred."
-        }
+        return uploadToPastecord(fileWrapper.fileData.content)
     }
 
-    private fun uploadToHastebin(fileContent: String): String {
+    private fun uploadToPastecord(fileContent: String): String {
         val bodyJson: String = fileContent.trimIndent()
 
         val (_, _, result) = Fuel

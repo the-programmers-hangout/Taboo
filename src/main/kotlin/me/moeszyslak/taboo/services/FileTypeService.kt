@@ -6,6 +6,7 @@ import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Attachment
 import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.Message
+import kotlinx.coroutines.runBlocking
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileData
@@ -19,38 +20,45 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
     suspend fun handleMessage(message: Message) {
 
-        val metadataList = message.attachments.map { metadataOf(it, message.getGuild()) }
+        @Suppress("BlockingMethodInNonBlockingContext")
+        runBlocking {
+            val metadataList = message.attachments.map { metadataOf(it, message.getGuild()) }
 
-        metadataList.forEach { fileWrapper ->
-            if (fileWrapper == null) return@forEach
-            if (fileWrapper.fileMetadata.isAllowed) return@forEach
+            metadataList.forEach { fileWrapper ->
+                if (fileWrapper == null) return@forEach
+                if (fileWrapper.fileMetadata.isAllowed) return@forEach
 
-            val user = message.author!!.mention
-            val member = message.getAuthorAsMember()!!
-            val type = fileWrapper.fileMetadata.type
-            val channel = message.getChannel()
-            val guild = message.getGuild()
+                val user = message.author!!.mention
+                val member = message.getAuthorAsMember()!!
+                val type = fileWrapper.fileMetadata.type
+                val channel = message.getChannel()
+                val guild = message.getGuild()
 
-            message.delete()
+                message.delete()
 
-            when {
-                type.startsWith("text") -> {
-                    loggerService.logUploaded(guild, member, channel, fileWrapper)
-                    val sentMessage = channel.createMessage("uploading to pastecord...")
+                val config = configuration[guild.id.longValue] ?: return@runBlocking
+                val shouldUpload = config.mimeRules[type]?.uploadText ?: false
+                when {
+                    shouldUpload -> {
+                        loggerService.logUploaded(guild, member, channel, fileWrapper)
+                        val sentMessage = channel.createMessage("uploading to pastecord...")
 
-                    sentMessage.edit {
-                        content = FileUploader().uploadFile(fileWrapper)
+                        sentMessage.edit {
+                            content = FileUploader().uploadFile(fileWrapper)
+                        }
+                    }
+                    else -> {
+                        loggerService.logDeleted(guild, member, channel, fileWrapper)
+
+                        val response = customResponse(type, guild)
+                                ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
+
+                        channel.createMessage(response)
                     }
                 }
-                else -> {
-                    loggerService.logDeleted(guild, member, channel, fileWrapper)
-                    channel.createMessage(responseFor(user, fileWrapper.fileMetadata.typeAlias))
-                }
             }
-
-
-
         }
+
     }
 
 
@@ -80,6 +88,13 @@ class FileTypeService(private val configuration: Configuration, private val logg
             return "those type of files"
 
         return mimeType.acronym + " files"
+    }
+
+    private fun customResponse(mime: String, guild: Guild): String? {
+        val config = configuration[guild.id.longValue] ?: return null
+        val mimeConfig = config.mimeRules[mime] ?: return null
+
+        return mimeConfig.message
     }
 
     private fun responseFor(author: String, typeAlias: String): String {

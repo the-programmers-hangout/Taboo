@@ -4,6 +4,8 @@ import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
+import me.moeszyslak.taboo.extensions.requiredPermissionLevel
+import me.moeszyslak.taboo.services.PermissionsService
 import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
@@ -25,7 +27,6 @@ suspend fun main() {
             allowMentionPrefix = true
             generateCommandDocs = true
             showStartupLog = true
-            requiresGuild = true
             commandReaction = Emojis.eyes
             theme = Color(0x00BFFF)
         }
@@ -35,9 +36,6 @@ suspend fun main() {
             val configuration = it.discord.getInjectionObjects(Configuration::class)
             val statsService = it.discord.getInjectionObjects(StatisticsService::class)
             val guildConfiguration = configuration[it.guild!!.id.longValue]
-
-            val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration!!.staffRole))
-            val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
@@ -60,14 +58,19 @@ suspend fun main() {
                 inline = true
             }
 
-            field {
+            if (guildConfiguration != null) {
+                val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration.staffRole))
+                val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
+                field {
 
-                name = "Configuration"
-                value = "```" +
-                        "Staff Role: ${staffRole.name}\n" +
-                        "Logging Channel: ${loggingChannel.name}\n" +
-                        "```"
+                    name = "Configuration"
+                    value = "```" +
+                            "Staff Role: ${staffRole.name}\n" +
+                            "Logging Channel: ${loggingChannel.name}\n" +
+                            "```"
+                }
             }
+
 
             field {
                 val versions = it.discord.versions
@@ -94,14 +97,13 @@ suspend fun main() {
             }
         }
 
-        // This probably should work but currently it shows unknown command rather than just not responding
-//        permissions {
-//            val requiredPermissionLevel = command.requiredPermissionLevel
-//            val guild = guild ?: return@permissions false
-//            val member = user.asMember(guild.id)
-//
-//            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-//            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
-//        }
+        permissions {
+            val requiredPermissionLevel = command.requiredPermissionLevel
+            val guild = guild ?: return@permissions false
+            val member = user.asMember(guild.id)
+
+            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
+            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
+        }
     }
 }

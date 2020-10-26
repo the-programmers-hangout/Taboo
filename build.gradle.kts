@@ -11,6 +11,7 @@ plugins {
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -27,10 +28,10 @@ tasks {
     }
 
     shadowJar {
-        archiveFileName.set("EmbedBot.jar")
+        archiveFileName.set("Taboo.jar")
         manifest {
             attributes(
-                    "Main-Class" to "me.jakejmattson.embedbot.MainAppKt"
+                    "Main-Class" to "me.moeszyslak.taboo.MainAppKt"
             )
         }
     }
@@ -40,5 +41,5 @@ tasks {
 
 object Versions {
     const val BOT = "1.0.0"
-    const val DISCORDKT = "0.20.0"
+    const val DISCORDKT = "0.21.1"
 }
