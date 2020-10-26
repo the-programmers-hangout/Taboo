@@ -7,10 +7,11 @@
 | Argument... | Accepts many of this argument. |
 
 ## Configuration
-| Commands     | Arguments                      | Description                                                          |
-| ------------ | ------------------------------ | -------------------------------------------------------------------- |
-| IgnoredRoles | (ignore/unignore/list), (Role) | List ignored roles and ignore/unignore roles from the exclusion list |
-| Mime         | (add/remove/list), (Any...)    | List mimes and add/remove mimes from the ignore list                 |
+| Commands     | Arguments                                   | Description                                                          |
+| ------------ | ------------------------------------------- | -------------------------------------------------------------------- |
+| IgnoredRoles | (ignore/unignore/list), (Role)              | List ignored roles and ignore/unignore roles from the exclusion list |
+| Mime         | (add/remove/list), (Any...)                 | List mimes and add/remove mimes from the ignore list                 |
+| MimeRules    | (add/remove/list), (Any), (Boolean), (Text) | List mime Rules and add/remove mime rules from the ignore list       |
 
 ## GuildConfiguration
 | Commands   | Arguments | Description                                                |

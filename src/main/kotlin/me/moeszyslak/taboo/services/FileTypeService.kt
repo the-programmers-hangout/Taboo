@@ -36,8 +36,10 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
                 message.delete()
 
+                val config = configuration[guild.id.longValue] ?: return@runBlocking
+                val shouldUpload = config.mimeRules[type]?.uploadText ?: false
                 when {
-                    type.startsWith("text") -> {
+                    shouldUpload -> {
                         loggerService.logUploaded(guild, member, channel, fileWrapper)
                         val sentMessage = channel.createMessage("uploading to pastecord...")
 
@@ -47,7 +49,11 @@ class FileTypeService(private val configuration: Configuration, private val logg
                     }
                     else -> {
                         loggerService.logDeleted(guild, member, channel, fileWrapper)
-                        channel.createMessage(responseFor(user, fileWrapper.fileMetadata.typeAlias))
+
+                        val response = customResponse(type, guild)
+                                ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
+
+                        channel.createMessage(response)
                     }
                 }
             }
@@ -82,6 +88,13 @@ class FileTypeService(private val configuration: Configuration, private val logg
             return "those type of files"
 
         return mimeType.acronym + " files"
+    }
+
+    private fun customResponse(mime: String, guild: Guild): String? {
+        val config = configuration[guild.id.longValue] ?: return null
+        val mimeConfig = config.mimeRules[mime] ?: return null
+
+        return mimeConfig.message
     }
 
     private fun responseFor(author: String, typeAlias: String): String {
