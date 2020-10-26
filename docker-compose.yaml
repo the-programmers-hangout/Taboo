@@ -2,16 +2,11 @@ version: '3.8'
 services:
   taboo:
     container_name: Taboo
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: theprogrammershangout/taboo:latest
     volumes:
       - type: bind
-        source: ./config/config.json
-        target: /config/config.json
+        source: ./config
+        target: /config
     restart: always
     env_file:
       - .env
-
-volumes:
-  app:
