@@ -1,6 +1,7 @@
 package me.moeszyslak.taboo
 
 import com.gitlab.kordlib.common.entity.Snowflake
+import com.gitlab.kordlib.gateway.Intent
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
@@ -43,7 +44,7 @@ suspend fun main() {
             color = it.discord.configuration.theme
 
             thumbnail {
-                url = api.getSelf().avatar.url
+                url = it.discord.api.getSelf().avatar.url
             }
 
             field {
@@ -104,6 +105,10 @@ suspend fun main() {
 
             val permissionsService = discord.getInjectionObjects(PermissionsService::class)
             return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
+        }
+
+        intents {
+            +Intent.GuildMessages
         }
     }
 }
