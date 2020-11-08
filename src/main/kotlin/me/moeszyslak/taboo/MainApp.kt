@@ -2,6 +2,8 @@ package me.moeszyslak.taboo
 
 import com.gitlab.kordlib.common.entity.Snowflake
 import com.gitlab.kordlib.gateway.Intent
+import com.gitlab.kordlib.gateway.Intents
+import com.gitlab.kordlib.gateway.PrivilegedIntent
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
@@ -11,6 +13,7 @@ import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
 
+@PrivilegedIntent
 @ExperimentalTime
 suspend fun main() {
     val token = System.getenv("BOT_TOKEN") ?: null
@@ -108,7 +111,13 @@ suspend fun main() {
         }
 
         intents {
-            +Intent.GuildMessages
+            Intents.nonPrivileged.intents.forEach {
+                +it
+            }
+
+            +Intent.GuildMembers
         }
+
+
     }
 }
