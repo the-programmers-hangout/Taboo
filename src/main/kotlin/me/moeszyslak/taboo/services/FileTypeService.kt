@@ -1,7 +1,7 @@
 package me.moeszyslak.taboo.services
 
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
+import com.github.kittinunf.result.*
 import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Attachment
 import com.gitlab.kordlib.core.entity.Guild
@@ -41,7 +41,13 @@ class FileTypeService(private val configuration: Configuration, private val logg
                     val sentMessage = channel.createMessage("uploading to pastecord...")
 
                     sentMessage.edit {
-                        content = FileUploader().uploadFile(fileWrapper)
+                        content = FileUploader().upload(fileWrapper).fold(
+                               success = {
+                                   "File uploaded to pastecord for ${user}: ${it}"
+                               },
+                               failure = {
+                                   "Unable to upload file to pastecord for ${user}: ${it.localizedMessage}"
+                               })
                     }
                 }
                 else -> {
