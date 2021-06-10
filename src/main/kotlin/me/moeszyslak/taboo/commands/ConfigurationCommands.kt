@@ -18,7 +18,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                 RoleArg.makeNullableOptional(null)) {
 
             val (choice, role) = args
-            val config = configuration[(guild.id.longValue)] ?: return@execute
+            val config = configuration[guild.id] ?: return@execute
 
             when (choice) {
                 "ignore" -> {
@@ -94,7 +94,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                 MultipleArg(AnyArg).makeNullableOptional(null)) {
 
             val (choice, mime) = args
-            val config = configuration[guild.id.longValue] ?: return@execute
+            val config = configuration[guild.id] ?: return@execute
 
             when (choice) {
                 "add" -> {
@@ -172,7 +172,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                 AnyArg.makeNullableOptional(null), BooleanArg.makeOptional(false), EveryArg.makeNullableOptional()) {
 
             val (choice, mime, upload, warningMessage) = args
-            val config = configuration[guild.id.longValue] ?: return@execute
+            val config = configuration[guild.id] ?: return@execute
 
             when (choice) {
                 "add" -> {

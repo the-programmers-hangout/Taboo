@@ -33,7 +33,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
             message.delete()
 
-            val config = configuration[guild.id.longValue] ?: return@forEach
+            val config = configuration[guild.id] ?: return@forEach
             val shouldUpload = config.mimeRules[type]?.uploadText ?: false
             when {
                 shouldUpload -> {
@@ -43,7 +43,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
                     sentMessage.edit {
                         content = FileUploader().upload(fileWrapper).fold(
                                success = {
-                                   "File uploaded to pastecord for ${user}: ${it}"
+                                   "File uploaded to pastecord for ${user}: $it"
                                },
                                failure = {
                                    "Unable to upload file to pastecord for ${user}: ${it.localizedMessage}"
@@ -77,7 +77,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
 
     private fun isAllowed(type: String, guild: Guild): Boolean {
-        val config = configuration[guild.id.longValue] ?: return false
+        val config = configuration[guild.id] ?: return false
 
         return config.ignoredMimes.contains(type)
     }
@@ -93,7 +93,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
     }
 
     private fun customResponse(mime: String, guild: Guild): String? {
-        val config = configuration[guild.id.longValue] ?: return null
+        val config = configuration[guild.id] ?: return null
         val mimeConfig = config.mimeRules[mime] ?: return null
 
         return mimeConfig.message

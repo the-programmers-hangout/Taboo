@@ -24,7 +24,7 @@ suspend fun main() {
 
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id.longValue]?.prefix } ?: prefix
+            guild?.let { configuration.get(it.id)?.prefix } ?: prefix
         }
 
         configure {
@@ -35,11 +35,10 @@ suspend fun main() {
             theme = Color(0x00BFFF)
         }
 
-
         mentionEmbed {
             val configuration = it.discord.getInjectionObjects(Configuration::class)
             val statsService = it.discord.getInjectionObjects(StatisticsService::class)
-            val guildConfiguration = configuration[it.guild!!.id.longValue]
+            val guildConfiguration = configuration[it.guild!!.id]
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
@@ -63,8 +62,8 @@ suspend fun main() {
             }
 
             if (guildConfiguration != null) {
-                val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration.staffRole))
-                val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
+                val staffRole = it.guild!!.getRole(guildConfiguration.staffRole)
+                val loggingChannel = it.guild!!.getChannel(guildConfiguration.logChannel)
                 field {
 
                     name = "Configuration"
@@ -117,7 +116,5 @@ suspend fun main() {
 
             +Intent.GuildMembers
         }
-
-
     }
 }
