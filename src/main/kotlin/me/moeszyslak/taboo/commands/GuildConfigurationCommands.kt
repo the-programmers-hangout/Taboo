@@ -20,8 +20,8 @@ fun guildConfigurationCommands(configuration: Configuration) = commands("GuildCo
             }
 
             ConfigurationConversation(configuration)
-                    .createConfigurationConversation(guild)
-                    .startPublicly(discord, author, channel)
+                .createConfigurationConversation(guild)
+                .startPublicly(discord, author, channel)
 
             respond("${guild.name} has been setup")
         }

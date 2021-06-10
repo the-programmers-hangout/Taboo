@@ -1,6 +1,6 @@
 package me.moeszyslak.taboo.listeners
 
-import com.gitlab.kordlib.core.event.message.MessageCreateEvent
+import dev.kord.core.event.message.MessageCreateEvent
 import me.jakejmattson.discordkt.api.dsl.listeners
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.services.FileTypeService

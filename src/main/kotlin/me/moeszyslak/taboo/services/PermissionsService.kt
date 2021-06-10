@@ -1,6 +1,6 @@
 package me.moeszyslak.taboo.services
 
-import com.gitlab.kordlib.core.entity.Member
+import dev.kord.core.entity.Member
 import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
@@ -29,7 +29,7 @@ class PermissionsService(private val configuration: Configuration) {
             else -> Permission.NONE
         }
 
-    private fun Member.isBotOwner() = id.longValue == configuration.botOwner
+    private fun Member.isBotOwner() = id.value == configuration.botOwner
     private suspend fun Member.isGuildOwner() = isOwner()
     private suspend fun Member.isStaff(): Boolean {
         val config = configuration[guildId] ?: return false

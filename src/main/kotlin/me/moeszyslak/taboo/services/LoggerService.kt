@@ -1,11 +1,11 @@
 package me.moeszyslak.taboo.services
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.behavior.getChannelOfOrNull
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.channel.MessageChannel
-import com.gitlab.kordlib.core.entity.channel.TextChannel
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.getChannelOfOrNull
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileWrapper

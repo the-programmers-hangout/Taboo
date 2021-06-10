@@ -1,10 +1,10 @@
 package me.moeszyslak.taboo
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.gateway.Intent
-import com.gitlab.kordlib.gateway.Intents
-import com.gitlab.kordlib.gateway.PrivilegedIntent
-import com.gitlab.kordlib.kordx.emoji.Emojis
+import dev.kord.common.annotation.KordPreview
+import dev.kord.common.kColor
+import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
+import dev.kord.x.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.extensions.requiredPermissionLevel
@@ -13,6 +13,7 @@ import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
 
+@OptIn(KordPreview::class)
 @PrivilegedIntent
 @ExperimentalTime
 suspend fun main() {
@@ -21,10 +22,11 @@ suspend fun main() {
     require(token != null) { "Expected the bot token as an environment variable" }
 
     bot(token) {
+        inject(Configuration.load())
 
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration.get(it.id)?.prefix } ?: prefix
+            guild?.let { configuration[it.id]?.prefix } ?: prefix
         }
 
         configure {
@@ -33,6 +35,7 @@ suspend fun main() {
             showStartupLog = true
             commandReaction = Emojis.eyes
             theme = Color(0x00BFFF)
+            intents = Intents.nonPrivileged.values
         }
 
         mentionEmbed {
@@ -42,11 +45,10 @@ suspend fun main() {
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
-
-            color = it.discord.configuration.theme
+            color = it.discord.configuration.theme?.kColor
 
             thumbnail {
-                url = it.discord.api.getSelf().avatar.url
+                url = it.discord.kord.getSelf().avatar.url
             }
 
             field {
@@ -68,23 +70,22 @@ suspend fun main() {
 
                     name = "Configuration"
                     value = "```" +
-                            "Staff Role: ${staffRole.name}\n" +
-                            "Logging Channel: ${loggingChannel.name}\n" +
-                            "```"
+                        "Staff Role: ${staffRole.name}\n" +
+                        "Logging Channel: ${loggingChannel.name}\n" +
+                        "```"
                 }
             }
-
 
             field {
                 val versions = it.discord.versions
 
                 name = "Bot Info"
                 value = "```" +
-                        "Version: 1.0.0\n" +
-                        "DiscordKt: ${versions.library}\n" +
-                        "Kord: ${versions.kord}\n" +
-                        "Kotlin: ${versions.kotlin}" +
-                        "```"
+                    "Version: 1.0.0\n" +
+                    "DiscordKt: ${versions.library}\n" +
+                    "Kord: ${versions.kord}\n" +
+                    "Kotlin: ${versions.kotlin}" +
+                    "```"
             }
 
             field {
@@ -107,14 +108,6 @@ suspend fun main() {
 
             val permissionsService = discord.getInjectionObjects(PermissionsService::class)
             return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
-        }
-
-        intents {
-            Intents.nonPrivileged.intents.forEach {
-                +it
-            }
-
-            +Intent.GuildMembers
         }
     }
 }

@@ -1,6 +1,6 @@
 package me.moeszyslak.taboo.conversations
 
-import com.gitlab.kordlib.core.entity.Guild
+import dev.kord.core.entity.Guild
 import me.jakejmattson.discordkt.api.arguments.ChannelArg
 import me.jakejmattson.discordkt.api.arguments.EveryArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg

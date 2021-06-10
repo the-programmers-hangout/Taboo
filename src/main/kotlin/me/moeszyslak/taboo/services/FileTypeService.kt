@@ -1,16 +1,13 @@
 package me.moeszyslak.taboo.services
 
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.*
-import com.gitlab.kordlib.core.behavior.edit
-import com.gitlab.kordlib.core.entity.Attachment
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Message
+import com.github.kittinunf.result.Result
+import dev.kord.core.behavior.edit
+import dev.kord.core.entity.Attachment
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Message
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.moeszyslak.taboo.data.Configuration
-import me.moeszyslak.taboo.data.FileData
-import me.moeszyslak.taboo.data.FileMetadata
-import me.moeszyslak.taboo.data.FileWrapper
+import me.moeszyslak.taboo.data.*
 import org.apache.tika.Tika
 import org.apache.tika.config.TikaConfig
 
@@ -42,19 +39,19 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
                     sentMessage.edit {
                         content = FileUploader().upload(fileWrapper).fold(
-                               success = {
-                                   "File uploaded to pastecord for ${user}: $it"
-                               },
-                               failure = {
-                                   "Unable to upload file to pastecord for ${user}: ${it.localizedMessage}"
-                               })
+                            success = {
+                                "File uploaded to pastecord for ${user}: $it"
+                            },
+                            failure = {
+                                "Unable to upload file to pastecord for ${user}: ${it.localizedMessage}"
+                            })
                     }
                 }
                 else -> {
                     loggerService.logDeleted(guild, member, channel, fileWrapper)
 
                     val response = customResponse(type, guild)
-                            ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
+                        ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
 
                     channel.createMessage(response)
                 }
@@ -105,8 +102,8 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
     private fun getFile(url: String): String? {
         val (_, _, result) = url
-                .httpGet()
-                .responseString()
+            .httpGet()
+            .responseString()
 
         return when (result) {
             is Result.Success -> {
