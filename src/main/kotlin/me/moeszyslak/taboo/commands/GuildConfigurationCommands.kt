@@ -65,19 +65,19 @@ fun guildConfigurationCommands(configuration: Configuration) = commands("GuildCo
 
             respond("Logging channel set to ${logChannel.name}")
         }
+    }
 
-        guildCommand("LineLimit") {
-            description = "Set the max line count before upload."
-            requiredPermissionLevel = Permission.STAFF
-            execute(IntegerArg) {
-                val limit = args.first
-                val config = configuration[guild.id] ?: return@execute
+    guildCommand("LineLimit") {
+        description = "Set the max line count before upload."
+        requiredPermissionLevel = Permission.STAFF
+        execute(IntegerArg) {
+            val limit = args.first
+            val config = configuration[guild.id] ?: return@execute
 
-                config.lineLimit = limit
-                configuration.save()
+            config.lineLimit = limit
+            configuration.save()
 
-                respond("Line limit set to $limit")
-            }
+            respond("Line limit set to $limit")
         }
     }
 }
