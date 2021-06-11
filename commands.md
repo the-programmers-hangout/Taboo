@@ -15,6 +15,7 @@
 ## GuildConfiguration
 | Commands   | Arguments | Description                                                |
 | ---------- | --------- | ---------------------------------------------------------- |
+| LineLimit  | Integer   | Set the max line count before upload.                      |
 | LogChannel | Channel   | Set the channel where logs will be output.                 |
 | Prefix     | Prefix    | Set the prefix required for the bot to register a command. |
 | Setup      |           | Setup a guild to use Taboo                                 |

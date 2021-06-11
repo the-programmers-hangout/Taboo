@@ -12,10 +12,10 @@ import org.apache.tika.Tika
 import org.apache.tika.config.TikaConfig
 
 @Service
-class FileTypeService(private val configuration: Configuration, private val loggerService: LoggerService) {
-
+class FileTypeService(private val configuration: Configuration,
+                      private val fileUploader: FileUploader,
+                      private val loggerService: LoggerService) {
     suspend fun handleMessage(message: Message) {
-
         val metadataList = message.attachments.map { metadataOf(it, message.getGuild()) }
 
         metadataList.forEach { fileWrapper ->
@@ -38,7 +38,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
                     val sentMessage = channel.createMessage("uploading to pastecord...")
 
                     sentMessage.edit {
-                        content = FileUploader().upload(fileWrapper).fold(
+                        content = fileUploader.upload(fileWrapper).fold(
                             success = {
                                 "File uploaded to pastecord for ${user}: $it"
                             },

@@ -42,7 +42,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                 }
 
                 "unignore" -> {
-
                     if (role == null) {
                         respond("Received less arguments than expected. Expected: `(Role)`")
                         return@execute
@@ -78,7 +77,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                                 value = roles.joinToString("\n")
                             }
                         }
-
                     }
                 }
 
@@ -100,7 +98,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
             when (choice) {
                 "add" -> {
-
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -118,9 +115,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("${mime.joinToString()} added to the ignore list")
                 }
-
                 "remove" -> {
-
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -138,7 +133,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("${mime.joinToString()} removed to the ignore list")
                 }
-
                 "list" -> {
                     respond {
                         title = "Currently ignored mimes"
@@ -158,10 +152,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     }
                 }
-
-                else -> {
-                    respond("Invalid choice")
-                }
+                else -> respond("Invalid choice")
             }
         }
     }
@@ -178,7 +169,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
             when (choice) {
                 "add" -> {
-
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -199,9 +189,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("$mime's rules have been updated")
                 }
-
                 "remove" -> {
-
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -228,7 +216,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                             }
                         }
                     } else {
-
                         val chunks = config.mimeRules.toList().chunked(25)
 
                         respondMenu {
@@ -249,7 +236,6 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         }
                     }
                 }
-
                 else -> {
                     respond("Invalid choice")
                 }

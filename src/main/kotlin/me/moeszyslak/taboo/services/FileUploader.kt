@@ -11,7 +11,6 @@ data class PasteResponse(val key: String = "")
 
 @Service
 class FileUploader {
-
     fun upload(file: FileWrapper): Result<String, Exception> {
         return upload(file.fileData.content)
     }

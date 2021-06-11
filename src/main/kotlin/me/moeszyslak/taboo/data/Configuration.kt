@@ -52,6 +52,7 @@ data class GuildConfiguration(
     var prefix: String,
     var logChannel: Snowflake,
     var staffRole: Snowflake,
+    var lineLimit: Int = 20,
     var ignoredRoles: MutableSet<Long> = mutableSetOf(),
     var ignoredMimes: MutableSet<String> = mutableSetOf(),
     var mimeRules: MutableMap<String, MimeConfiguration> = mutableMapOf()
