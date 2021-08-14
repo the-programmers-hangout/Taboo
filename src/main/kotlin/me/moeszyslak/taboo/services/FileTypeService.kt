@@ -2,10 +2,10 @@ package me.moeszyslak.taboo.services
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.gitlab.kordlib.core.behavior.edit
-import com.gitlab.kordlib.core.entity.Attachment
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Message
+import dev.kord.core.behavior.edit
+import dev.kord.core.entity.Attachment
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Message
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileData
@@ -33,7 +33,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
             message.delete()
 
-            val config = configuration[guild.id.longValue] ?: return@forEach
+            val config = configuration[guild.id.value] ?: return@forEach
             val shouldUpload = config.mimeRules[type]?.uploadText ?: false
             when {
                 shouldUpload -> {
@@ -71,7 +71,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
 
     private fun isAllowed(type: String, guild: Guild): Boolean {
-        val config = configuration[guild.id.longValue] ?: return false
+        val config = configuration[guild.id.value] ?: return false
 
         return config.ignoredMimes.contains(type)
     }
@@ -87,7 +87,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
     }
 
     private fun customResponse(mime: String, guild: Guild): String? {
-        val config = configuration[guild.id.longValue] ?: return null
+        val config = configuration[guild.id.value] ?: return null
         val mimeConfig = config.mimeRules[mime] ?: return null
 
         return mimeConfig.message

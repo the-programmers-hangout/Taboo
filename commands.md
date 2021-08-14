@@ -3,15 +3,15 @@
 ## Key 
 | Symbol      | Meaning                        |
 | ----------- | ------------------------------ |
-| (Argument)  | Argument is not required.      |
-| Argument... | Accepts many of this argument. |
+| [Argument]  | Argument is not required.      |
 
 ## Configuration
+
 | Commands     | Arguments                                   | Description                                                          |
 | ------------ | ------------------------------------------- | -------------------------------------------------------------------- |
-| IgnoredRoles | (ignore/unignore/list), (Role)              | List ignored roles and ignore/unignore roles from the exclusion list |
-| Mime         | (add/remove/list), (Any...)                 | List mimes and add/remove mimes from the ignore list                 |
-| MimeRules    | (add/remove/list), (Any), (Boolean), (Text) | List mime Rules and add/remove mime rules from the ignore list       |
+| IgnoredRoles | [ignore/unignore/list], [Role]              | List ignored roles and ignore/unignore roles from the exclusion list |
+| Mime         | [add/remove/list], [Any...]                 | List mimes and add/remove mimes from the ignore list                 |
+| MimeRules    | [add/remove/list], [Any], [Boolean], [Text] | List mime Rules and add/remove mime rules from the ignore list       |
 
 ## GuildConfiguration
 | Commands   | Arguments | Description                                                |
@@ -24,5 +24,5 @@
 ## Utility
 | Commands | Arguments | Description          |
 | -------- | --------- | -------------------- |
-| Help     | (Command) | Display a help menu. |
+| Help     | [Command] | Display a help menu. |
 

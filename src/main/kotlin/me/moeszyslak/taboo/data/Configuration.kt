@@ -1,8 +1,8 @@
 package me.moeszyslak.taboo.data
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.channel.Channel
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Role
+import dev.kord.core.entity.channel.Channel
 import me.jakejmattson.discordkt.api.dsl.Data
 
 data class Configuration(
@@ -13,18 +13,18 @@ data class Configuration(
     fun hasGuildConfig(guildId: Long) = guildConfigurations.containsKey(guildId)
 
     fun setup(guild: Guild, prefix: String, logChannel: Channel, staffRole: Role) {
-        if (guildConfigurations[guild.id.longValue] != null) return
+        if (guildConfigurations[guild.id.value] != null) return
 
         val newConfiguration = GuildConfiguration(
-                logChannel.id.longValue,
-                prefix,
-                staffRole.id.longValue,
-                mutableSetOf(),
-                mutableSetOf(),
-                mutableMapOf()
+            logChannel.id.value,
+            prefix,
+            staffRole.id.value,
+            mutableSetOf(),
+            mutableSetOf(),
+            mutableMapOf()
         )
 
-        guildConfigurations[guild.id.longValue] = newConfiguration
+        guildConfigurations[guild.id.value] = newConfiguration
         save()
     }
 }

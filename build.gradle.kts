@@ -1,29 +1,26 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 group = "me.moeszyslak"
 version = Versions.BOT
 
 plugins {
-    kotlin("jvm") version "1.4.0"
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    kotlin("jvm") version "1.5.21"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation("me.jakejmattson:DiscordKt:${Versions.DISCORDKT}")
     implementation("org.apache.tika:tika-parsers:1.24.1")
-    implementation("com.github.kittinunf.fuel:fuel:2.2.3")
-    implementation("com.github.kittinunf.fuel:fuel-gson:2.2.3")
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
 }
 
 
 tasks {
-    withType<KotlinCompile> {
+    compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
 
@@ -41,5 +38,5 @@ tasks {
 
 object Versions {
     const val BOT = "1.0.0"
-    const val DISCORDKT = "0.21.3"
+    const val DISCORDKT = "0.23.0-SNAPSHOT"
 }
