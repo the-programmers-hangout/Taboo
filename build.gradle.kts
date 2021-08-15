@@ -16,6 +16,7 @@ dependencies {
     implementation("org.apache.tika:tika-parsers:1.24.1")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
 }
 
 tasks {
