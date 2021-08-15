@@ -82,7 +82,7 @@ suspend fun main() {
 
                 name = "Bot Info"
                 value = "```" +
-                        "Version: 2.0.0\n" +
+                        "Version: 2.1.0\n" +
                         "DiscordKt: ${versions.library}\n" +
                         "Kord: ${versions.kord}\n" +
                         "Kotlin: ${versions.kotlin}" +
