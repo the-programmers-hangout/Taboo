@@ -5,7 +5,6 @@ import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.utilities.timeToString
 import java.util.*
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -18,6 +17,6 @@ class StatisticsService(private val configuration: Configuration, private val di
 
 
     val ping: String
-        get() = "${discord.kord.gateway.averagePing!!.toDouble(DurationUnit.MILLISECONDS).toInt()} ms"
+        get() = "${discord.kord.gateway.averagePing} ms"
 
 }

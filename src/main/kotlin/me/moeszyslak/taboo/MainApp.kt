@@ -1,20 +1,18 @@
 package me.moeszyslak.taboo
 
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Snowflake
 import dev.kord.common.kColor
-import dev.kord.gateway.Intents
-import dev.kord.gateway.PrivilegedIntent
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.x.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
-import me.moeszyslak.taboo.extensions.requiredPermissionLevel
-import me.moeszyslak.taboo.services.PermissionsService
+import me.moeszyslak.taboo.data.Permissions
 import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
 
-@OptIn(KordPreview::class)
-@PrivilegedIntent
+@KordPreview
 @ExperimentalTime
 suspend fun main() {
     val token = System.getenv("BOT_TOKEN") ?: null
@@ -22,11 +20,10 @@ suspend fun main() {
     require(token != null) { "Expected the bot token as an environment variable" }
 
     bot(token) {
-        inject(Configuration.load())
 
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id]?.prefix } ?: prefix
+            guild?.let { configuration[it.id.value]?.prefix } ?: prefix
         }
 
         configure {
@@ -35,17 +32,20 @@ suspend fun main() {
             showStartupLog = true
             commandReaction = Emojis.eyes
             theme = Color(0x00BFFF)
-            intents = Intents.nonPrivileged.values
+            entitySupplyStrategy = EntitySupplyStrategy.cacheWithRestFallback
+            permissions(Permissions.STAFF)
         }
+
 
         mentionEmbed {
             val configuration = it.discord.getInjectionObjects(Configuration::class)
             val statsService = it.discord.getInjectionObjects(StatisticsService::class)
-            val guildConfiguration = configuration[it.guild!!.id]
+            val guildConfiguration = configuration[it.guild!!.id.value]
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
-            color = it.discord.configuration.theme?.kColor
+
+            color = it.discord.configuration.theme!!.kColor
 
             thumbnail {
                 url = it.discord.kord.getSelf().avatar.url
@@ -64,28 +64,29 @@ suspend fun main() {
             }
 
             if (guildConfiguration != null) {
-                val staffRole = it.guild!!.getRole(guildConfiguration.staffRole)
-                val loggingChannel = it.guild!!.getChannel(guildConfiguration.logChannel)
+                val staffRole = it.guild!!.getRole(Snowflake(guildConfiguration.staffRole))
+                val loggingChannel = it.guild!!.getChannel(Snowflake(guildConfiguration.logChannel))
                 field {
 
                     name = "Configuration"
                     value = "```" +
-                        "Staff Role: ${staffRole.name}\n" +
-                        "Logging Channel: ${loggingChannel.name}\n" +
-                        "```"
+                            "Staff Role: ${staffRole.name}\n" +
+                            "Logging Channel: ${loggingChannel.name}\n" +
+                            "```"
                 }
             }
+
 
             field {
                 val versions = it.discord.versions
 
                 name = "Bot Info"
                 value = "```" +
-                    "Version: 1.0.0\n" +
-                    "DiscordKt: ${versions.library}\n" +
-                    "Kord: ${versions.kord}\n" +
-                    "Kotlin: ${versions.kotlin}" +
-                    "```"
+                        "Version: 2.0.0\n" +
+                        "DiscordKt: ${versions.library}\n" +
+                        "Kord: ${versions.kord}\n" +
+                        "Kotlin: ${versions.kotlin}" +
+                        "```"
             }
 
             field {
@@ -101,13 +102,6 @@ suspend fun main() {
             }
         }
 
-        permissions {
-            val requiredPermissionLevel = command.requiredPermissionLevel
-            val guild = guild ?: return@permissions false
-            val member = user.asMember(guild.id)
 
-            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-            return@permissions permissionsService.hasClearance(member, requiredPermissionLevel)
-        }
     }
 }

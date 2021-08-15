@@ -7,15 +7,18 @@ import dev.kord.core.entity.Attachment
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Message
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.moeszyslak.taboo.data.*
+import me.moeszyslak.taboo.data.Configuration
+import me.moeszyslak.taboo.data.FileData
+import me.moeszyslak.taboo.data.FileMetadata
+import me.moeszyslak.taboo.data.FileWrapper
 import org.apache.tika.Tika
 import org.apache.tika.config.TikaConfig
 
 @Service
-class FileTypeService(private val configuration: Configuration,
-                      private val fileUploader: FileUploader,
-                      private val loggerService: LoggerService) {
+class FileTypeService(private val configuration: Configuration, private val loggerService: LoggerService) {
+
     suspend fun handleMessage(message: Message) {
+
         val metadataList = message.attachments.map { metadataOf(it, message.getGuild()) }
 
         metadataList.forEach { fileWrapper ->
@@ -30,7 +33,7 @@ class FileTypeService(private val configuration: Configuration,
 
             message.delete()
 
-            val config = configuration[guild.id] ?: return@forEach
+            val config = configuration[guild.id.value] ?: return@forEach
             val shouldUpload = config.mimeRules[type]?.uploadText ?: false
             when {
                 shouldUpload -> {
@@ -38,20 +41,14 @@ class FileTypeService(private val configuration: Configuration,
                     val sentMessage = channel.createMessage("uploading to pastecord...")
 
                     sentMessage.edit {
-                        content = fileUploader.upload(fileWrapper).fold(
-                            success = {
-                                "File uploaded to pastecord for ${user}: $it"
-                            },
-                            failure = {
-                                "Unable to upload file to pastecord for ${user}: ${it.localizedMessage}"
-                            })
+                        content = FileUploader().uploadFile(fileWrapper)
                     }
                 }
                 else -> {
                     loggerService.logDeleted(guild, member, channel, fileWrapper)
 
                     val response = customResponse(type, guild)
-                        ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
+                            ?: responseFor(user, fileWrapper.fileMetadata.typeAlias)
 
                     channel.createMessage(response)
                 }
@@ -74,7 +71,7 @@ class FileTypeService(private val configuration: Configuration,
 
 
     private fun isAllowed(type: String, guild: Guild): Boolean {
-        val config = configuration[guild.id] ?: return false
+        val config = configuration[guild.id.value] ?: return false
 
         return config.ignoredMimes.contains(type)
     }
@@ -90,7 +87,7 @@ class FileTypeService(private val configuration: Configuration,
     }
 
     private fun customResponse(mime: String, guild: Guild): String? {
-        val config = configuration[guild.id] ?: return null
+        val config = configuration[guild.id.value] ?: return null
         val mimeConfig = config.mimeRules[mime] ?: return null
 
         return mimeConfig.message
@@ -102,8 +99,8 @@ class FileTypeService(private val configuration: Configuration,
 
     private fun getFile(url: String): String? {
         val (_, _, result) = url
-            .httpGet()
-            .responseString()
+                .httpGet()
+                .responseString()
 
         return when (result) {
             is Result.Success -> {

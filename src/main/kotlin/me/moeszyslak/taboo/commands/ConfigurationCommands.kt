@@ -3,28 +3,28 @@ package me.moeszyslak.taboo.commands
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.kColor
 import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.api.commands.commands
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.MimeConfiguration
-import me.moeszyslak.taboo.extensions.requiredPermissionLevel
-import me.moeszyslak.taboo.services.Permission
+import me.moeszyslak.taboo.data.Permissions
 import java.awt.Color
 
 fun configurationCommands(configuration: Configuration) = commands("Configuration") {
-    val tabooRed = Color(0xE10015).kColor
-    val tabooPink = Color(0xDB5F96).kColor
 
     guildCommand("IgnoredRoles") {
         description = "List ignored roles and ignore/unignore roles from the exclusion list"
-        requiredPermissionLevel = Permission.STAFF
-        execute(ChoiceArg("ignore/unignore/list", "ignore", "unignore", "list").optional("list"),
-            RoleArg.optionalNullable(null)) {
+        requiredPermission = Permissions.STAFF
+        execute(
+            ChoiceArg("ignore/unignore/list", "ignore", "unignore", "list").optional("list"),
+            RoleArg.optionalNullable(null)
+        ) {
 
             val (choice, role) = args
-            val config = configuration[guild.id] ?: return@execute
+            val config = configuration[(guild.id.value)] ?: return@execute
 
             when (choice) {
                 "ignore" -> {
+
                     if (role == null) {
                         respond("Received less arguments than expected. Expected: `(Role)`")
                         return@execute
@@ -42,6 +42,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                 }
 
                 "unignore" -> {
+
                     if (role == null) {
                         respond("Received less arguments than expected. Expected: `(Role)`")
                         return@execute
@@ -63,12 +64,12 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         title = "Currently ignored roles"
 
                         if (config.ignoredRoles.isEmpty()) {
-                            color = tabooRed
+                            color = Color(0xE10015).kColor
                             field {
                                 value = "There are currently no ignored roles."
                             }
                         } else {
-                            color = tabooPink
+                            color = Color(0xDB5F96).kColor
                             val roles = config.ignoredRoles.map { ignoredRole ->
                                 guild.getRole(Snowflake(ignoredRole)).mention
                             }
@@ -77,6 +78,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                                 value = roles.joinToString("\n")
                             }
                         }
+
                     }
                 }
 
@@ -89,15 +91,18 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
     guildCommand("Mime") {
         description = "List mimes and add/remove mimes from the ignore list"
-        requiredPermissionLevel = Permission.STAFF
-        execute(ChoiceArg("add/remove/list", "add", "remove", "list").optional("list"),
-            MultipleArg(AnyArg).optionalNullable(null)) {
+        requiredPermission = Permissions.STAFF
+        execute(
+            ChoiceArg("add/remove/list", "add", "remove", "list").optional("list"),
+            MultipleArg(AnyArg).optionalNullable(null)
+        ) {
 
             val (choice, mime) = args
-            val config = configuration[guild.id] ?: return@execute
+            val config = configuration[guild.id.value] ?: return@execute
 
             when (choice) {
                 "add" -> {
+
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -115,7 +120,9 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("${mime.joinToString()} added to the ignore list")
                 }
+
                 "remove" -> {
+
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -133,17 +140,18 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("${mime.joinToString()} removed to the ignore list")
                 }
+
                 "list" -> {
                     respond {
                         title = "Currently ignored mimes"
 
                         if (config.ignoredMimes.isEmpty()) {
-                            color = tabooRed
+                            color = Color(0xE10015).kColor
                             field {
                                 value = "There are currently no ignored mimes."
                             }
                         } else {
-                            color = tabooPink
+                            color = Color(0xDB5F96).kColor
 
                             field {
                                 value = config.ignoredMimes.joinToString("\n")
@@ -152,7 +160,10 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     }
                 }
-                else -> respond("Invalid choice")
+
+                else -> {
+                    respond("Invalid choice")
+                }
             }
         }
     }
@@ -160,15 +171,18 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
     guildCommand("MimeRules") {
         description = "List mime Rules and add/remove mime rules from the ignore list"
-        requiredPermissionLevel = Permission.STAFF
-        execute(ChoiceArg("add/remove/list", "add", "remove", "list").optional("list"),
-            AnyArg.optionalNullable(null), BooleanArg.optional(false), EveryArg.optionalNullable()) {
+        requiredPermission = Permissions.STAFF
+        execute(
+            ChoiceArg("add/remove/list", "add", "remove", "list").optional("list"),
+            AnyArg.optionalNullable(null), BooleanArg.optional(false), EveryArg.optionalNullable()
+        ) {
 
             val (choice, mime, upload, warningMessage) = args
-            val config = configuration[guild.id] ?: return@execute
+            val config = configuration[guild.id.value] ?: return@execute
 
             when (choice) {
                 "add" -> {
+
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -189,7 +203,9 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
                     respond("$mime's rules have been updated")
                 }
+
                 "remove" -> {
+
                     if (mime == null) {
                         respond("Received less arguments than expected. Expected: `(Mime)`")
                         return@execute
@@ -210,25 +226,26 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                     if (config.mimeRules.isEmpty()) {
                         respond {
                             title = "Current mime rules"
-                            color = tabooRed
+                            color = Color(0xE10015).kColor
                             field {
                                 value = "There are currently no mime rules"
                             }
                         }
                     } else {
+
                         val chunks = config.mimeRules.toList().chunked(25)
 
                         respondMenu {
                             chunks.map {
                                 page {
                                     title = "Current mime rules"
-                                    color = tabooPink
+                                    color = Color(0xDB5F96).kColor
 
                                     it.map { (mime, mimeconfig) ->
                                         field {
                                             name = "**$mime**"
                                             value = "```\nUpload: ${mimeconfig.uploadText}\n" +
-                                                "Delete message: ${mimeconfig.message}```"
+                                                    "Delete message: ${mimeconfig.message}```"
                                         }
                                     }
                                 }
@@ -236,6 +253,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         }
                     }
                 }
+
                 else -> {
                     respond("Invalid choice")
                 }

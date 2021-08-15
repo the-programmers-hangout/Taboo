@@ -1,45 +1,20 @@
 package me.moeszyslak.taboo.services
 
 import dev.kord.core.entity.Member
-import kotlinx.coroutines.flow.toList
+import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
-
-enum class Permission {
-    BOT_OWNER,
-    GUILD_OWNER,
-    STAFF,
-    USER,
-    NONE
-}
-
-val DEFAULT_REQUIRED_PERMISSION = Permission.STAFF
+import me.moeszyslak.taboo.data.Permissions
 
 @Service
-class PermissionsService(private val configuration: Configuration) {
-    suspend fun hasClearance(member: Member, requiredPermissionLevel: Permission) = member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
-    suspend fun canSendFile(member: Member) = member.isStaff() || member.isIgnored()
+class PermissionsService(private val configuration: Configuration, private val discord: Discord) {
+    suspend fun canSendFile(member: Member) =
+        discord.permissions.hasPermission(discord, member, Permissions.STAFF) || member.isIgnored()
 
-    private suspend fun Member.getPermissionLevel() =
-        when {
-            isBotOwner() -> Permission.BOT_OWNER
-            isGuildOwner() -> Permission.GUILD_OWNER
-            isStaff() -> Permission.STAFF
-            isUser() -> Permission.USER
-            else -> Permission.NONE
-        }
-
-    private fun Member.isBotOwner() = id.value == configuration.botOwner
-    private suspend fun Member.isGuildOwner() = isOwner()
-    private suspend fun Member.isStaff(): Boolean {
-        val config = configuration[guildId] ?: return false
-        return roles.toList().any { it.id == config.staffRole }
-    }
 
     private fun Member.isIgnored(): Boolean {
-        val config = configuration[guildId] ?: return false
+        val config = configuration[guildId.value] ?: return false
+
         return config.ignoredRoles.intersect(roleIds).isNotEmpty()
     }
-
-    private suspend fun Member.isUser() = asMemberOrNull() != null
 }
