@@ -5,6 +5,6 @@ RUN gradle shadowJar --no-daemon
 
 FROM openjdk:11.0.8-jre-slim
 RUN mkdir /config/
-COPY --from=build /taboo/build/libs/Taboo.jar /
+COPY --from=build /taboo/build/libs/*.jar /
 
 ENTRYPOINT ["java", "-jar", "/Taboo.jar"]
