@@ -18,7 +18,6 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
 }
 
-
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -28,13 +27,11 @@ tasks {
         archiveFileName.set("Taboo.jar")
         manifest {
             attributes(
-                    "Main-Class" to "me.moeszyslak.taboo.MainAppKt"
+                "Main-Class" to "me.moeszyslak.taboo.MainAppKt"
             )
         }
     }
 }
-
-
 
 object Versions {
     const val BOT = "1.0.0"

@@ -1,6 +1,6 @@
 package me.moeszyslak.taboo.utilities
 
-fun timeToString(milliseconds: Long): String{
+fun timeToString(milliseconds: Long): String {
     val seconds = (milliseconds / 1000) % 60
     val minutes = (milliseconds / (1000 * 60)) % 60
     val hours = (milliseconds / (1000 * 60 * 60)) % 24
