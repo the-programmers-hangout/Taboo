@@ -2,6 +2,7 @@ package me.moeszyslak.taboo.commands
 
 import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.arguments.ChannelArg
+import me.jakejmattson.discordkt.api.arguments.IntegerArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.commands.commands
 import me.moeszyslak.taboo.conversations.ConfigurationConversation
@@ -67,6 +68,19 @@ fun guildConfigurationCommands(configuration: Configuration) = commands("GuildCo
             configuration.save()
 
             respond("Logging channel set to ${logChannel.name}")
+        }
+    }
+
+    guildCommand("LineLimit") {
+        description = "Set the max line count before upload."
+        execute(IntegerArg) {
+            val limit = args.first
+            val config = configuration[guild.id.value] ?: return@execute
+
+            config.lineLimit = limit
+            configuration.save()
+
+            respond("Line limit set to $limit")
         }
     }
 }

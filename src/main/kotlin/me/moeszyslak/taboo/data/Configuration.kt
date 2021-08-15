@@ -21,7 +21,8 @@ data class Configuration(
             staffRole.id.value,
             mutableSetOf(),
             mutableSetOf(),
-            mutableMapOf()
+            mutableMapOf(),
+            4000
         )
 
         guildConfigurations[guild.id.value] = newConfiguration
@@ -30,12 +31,13 @@ data class Configuration(
 }
 
 data class GuildConfiguration(
-        var logChannel: Long,
-        var prefix: String,
-        var staffRole: Long,
-        var ignoredRoles: MutableSet<Long>,
-        var ignoredMimes: MutableSet<String>,
-        var mimeRules: MutableMap<String, MimeConfiguration>
+    var logChannel: Long,
+    var prefix: String,
+    var staffRole: Long,
+    var ignoredRoles: MutableSet<Long>,
+    var ignoredMimes: MutableSet<String>,
+    var mimeRules: MutableMap<String, MimeConfiguration>,
+    var lineLimit: Int
 )
 
 data class MimeConfiguration(

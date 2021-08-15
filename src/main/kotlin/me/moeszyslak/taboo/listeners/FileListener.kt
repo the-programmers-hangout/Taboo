@@ -14,12 +14,12 @@ fun fileListener(configuration: Configuration,
     on<MessageCreateEvent> {
         if (message.author?.isBot == true) return@on
         if (guildId == null) return@on
-        if (!configuration.hasGuildConfig(guildId!!)) return@on
+        if (!configuration.hasGuildConfig(guildId!!.value)) return@on
         if (permissionsService.canSendFile(message.getAuthorAsMember()!!)) return@on
 
         if (message.attachments.isNotEmpty()) {
             fileTypeService.handleMessage(message)
-        } else if (message.content.lines().size >= configuration[guildId!!]!!.lineLimit) {
+        } else if (message.content.lines().size >= configuration[guildId!!.value]!!.lineLimit) {
             message.delete()
             message.channel.createMessage(
                 fileUploader.upload(message.content).fold(
