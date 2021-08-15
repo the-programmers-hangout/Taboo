@@ -1,4 +1,4 @@
-FROM gradle:6.5.1-jdk14 AS build
+FROM gradle:7.1.1-jdk14 AS build
 COPY --chown=gradle:gradle . /taboo
 WORKDIR /taboo
 RUN gradle shadowJar --no-daemon

@@ -6,7 +6,6 @@
 | [Argument]  | Argument is not required.      |
 
 ## Configuration
-
 | Commands     | Arguments                                   | Description                                                          |
 | ------------ | ------------------------------------------- | -------------------------------------------------------------------- |
 | IgnoredRoles | [ignore/unignore/list], [Role]              | List ignored roles and ignore/unignore roles from the exclusion list |
