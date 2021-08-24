@@ -4,6 +4,8 @@ import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.common.kColor
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.gateway.Intents
+import dev.kord.gateway.PrivilegedIntent
 import dev.kord.x.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.moeszyslak.taboo.data.Configuration
@@ -12,6 +14,7 @@ import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
 
+@PrivilegedIntent
 @KordPreview
 @ExperimentalTime
 suspend fun main() {
@@ -33,6 +36,7 @@ suspend fun main() {
             commandReaction = Emojis.eyes
             theme = Color(0x00BFFF)
             entitySupplyStrategy = EntitySupplyStrategy.cacheWithRestFallback
+            intents = Intents.all
             permissions(Permissions.STAFF)
         }
 
