@@ -7,11 +7,12 @@ import me.jakejmattson.discordkt.api.commands.commands
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.MimeConfiguration
 import me.moeszyslak.taboo.data.Permissions
+import me.moeszyslak.taboo.extensions.long
 import java.awt.Color
 
 fun configurationCommands(configuration: Configuration) = commands("Configuration") {
 
-    guildCommand("IgnoredRoles") {
+    command("IgnoredRoles") {
         description = "List ignored roles and ignore/unignore roles from the exclusion list"
         requiredPermission = Permissions.STAFF
         execute(
@@ -20,7 +21,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         ) {
 
             val (choice, role) = args
-            val config = configuration[(guild.id.value)] ?: return@execute
+            val config = configuration[(guild.id.long())] ?: return@execute
 
             when (choice) {
                 "ignore" -> {
@@ -30,12 +31,12 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         return@execute
                     }
 
-                    if (config.ignoredRoles.contains(role.id.value)) {
+                    if (config.ignoredRoles.contains(role.id.long())) {
                         respond("${role.name} is already being ignored")
                         return@execute
                     }
 
-                    config.ignoredRoles.add(role.id.value)
+                    config.ignoredRoles.add(role.id.long())
                     configuration.save()
 
                     respond("${role.name} added to the ignore list")
@@ -48,12 +49,12 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
                         return@execute
                     }
 
-                    if (!config.ignoredRoles.contains(role.id.value)) {
+                    if (!config.ignoredRoles.contains(role.id.long())) {
                         respond("${role.name} is not being ignored")
                         return@execute
                     }
 
-                    config.ignoredRoles.remove(role.id.value)
+                    config.ignoredRoles.remove(role.id.long())
                     configuration.save()
 
                     respond("${role.name} removed from the ignore list")
@@ -89,7 +90,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         }
     }
 
-    guildCommand("Mime") {
+    command("Mime") {
         description = "List mimes and add/remove mimes from the ignore list"
         requiredPermission = Permissions.STAFF
         execute(
@@ -98,7 +99,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         ) {
 
             val (choice, mime) = args
-            val config = configuration[guild.id.value] ?: return@execute
+            val config = configuration[guild.id.long()] ?: return@execute
 
             when (choice) {
                 "add" -> {
@@ -169,7 +170,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
     }
 
 
-    guildCommand("MimeRules") {
+    command("MimeRules") {
         description = "List mime Rules and add/remove mime rules from the ignore list"
         requiredPermission = Permissions.STAFF
         execute(
@@ -178,7 +179,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         ) {
 
             val (choice, mime, upload, warningMessage) = args
-            val config = configuration[guild.id.value] ?: return@execute
+            val config = configuration[guild.id.long()] ?: return@execute
 
             when (choice) {
                 "add" -> {

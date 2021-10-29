@@ -4,6 +4,7 @@ version = Versions.BOT
 plugins {
     kotlin("jvm") version "1.5.21"
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.32"
 }
 
 repositories {
@@ -13,10 +14,11 @@ repositories {
 
 dependencies {
     implementation("me.jakejmattson:DiscordKt:${Versions.DISCORDKT}")
-    implementation("org.apache.tika:tika-parsers:2.1.0")
+    implementation("org.apache.tika:tika-parsers:1.27")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 }
 
 tasks {

@@ -3,33 +3,38 @@ package me.moeszyslak.taboo.data
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.channel.Channel
+import kotlinx.serialization.Serializable
 import me.jakejmattson.discordkt.api.dsl.Data
+import me.moeszyslak.taboo.extensions.long
 
+@Serializable
 data class Configuration(
-        val botOwner: Long = 345541952500006912,
-        val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()) : Data("config/config.json") {
+    val botOwner: Long = 345541952500006912,
+    val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
+) : Data() {
 
     operator fun get(id: Long) = guildConfigurations[id]
     fun hasGuildConfig(guildId: Long) = guildConfigurations.containsKey(guildId)
 
     fun setup(guild: Guild, prefix: String, logChannel: Channel, staffRole: Role) {
-        if (guildConfigurations[guild.id.value] != null) return
+        if (guildConfigurations[guild.id.long()] != null) return
 
         val newConfiguration = GuildConfiguration(
-            logChannel.id.value,
+            logChannel.id.long(),
             prefix,
-            staffRole.id.value,
+            staffRole.id.long(),
             mutableSetOf(),
             mutableSetOf(),
             mutableMapOf(),
             4000
         )
 
-        guildConfigurations[guild.id.value] = newConfiguration
+        guildConfigurations[guild.id.long()] = newConfiguration
         save()
     }
 }
 
+@Serializable
 data class GuildConfiguration(
     var logChannel: Long,
     var prefix: String,
@@ -40,7 +45,8 @@ data class GuildConfiguration(
     var lineLimit: Int
 )
 
+@Serializable
 data class MimeConfiguration(
-        var message: String,
-        var uploadText: Boolean
+    var message: String,
+    var uploadText: Boolean
 )

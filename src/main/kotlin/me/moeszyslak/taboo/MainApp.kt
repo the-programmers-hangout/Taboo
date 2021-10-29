@@ -2,14 +2,15 @@ package me.moeszyslak.taboo
 
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
-import dev.kord.common.kColor
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.x.emoji.Emojis
 import me.jakejmattson.discordkt.api.dsl.bot
+import me.jakejmattson.discordkt.api.extensions.pfpUrl
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.Permissions
+import me.moeszyslak.taboo.extensions.long
 import me.moeszyslak.taboo.services.StatisticsService
 import java.awt.Color
 import kotlin.time.ExperimentalTime
@@ -24,9 +25,10 @@ suspend fun main() {
 
     bot(token) {
 
+        val configuration = data("config/config.json") { Configuration() }
+
         prefix {
-            val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id.value]?.prefix } ?: prefix
+            guild?.let { configuration[it.id.long()]?.prefix } ?: prefix
         }
 
         configure {
@@ -42,17 +44,16 @@ suspend fun main() {
 
 
         mentionEmbed {
-            val configuration = it.discord.getInjectionObjects(Configuration::class)
             val statsService = it.discord.getInjectionObjects(StatisticsService::class)
-            val guildConfiguration = configuration[it.guild!!.id.value]
+            val guildConfiguration = configuration[it.guild!!.id.long()]
 
             title = "Taboo"
             description = "A file listener discord bot to prevent those pesky files from being shared"
 
-            color = it.discord.configuration.theme!!.kColor
+            color = it.discord.configuration.theme!!
 
             thumbnail {
-                url = it.discord.kord.getSelf().avatar.url
+                url = it.discord.kord.getSelf().pfpUrl
             }
 
             field {

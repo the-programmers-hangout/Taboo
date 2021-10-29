@@ -11,6 +11,7 @@ import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileData
 import me.moeszyslak.taboo.data.FileMetadata
 import me.moeszyslak.taboo.data.FileWrapper
+import me.moeszyslak.taboo.extensions.long
 import org.apache.tika.Tika
 import org.apache.tika.config.TikaConfig
 
@@ -33,7 +34,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
             message.delete()
 
-            val config = configuration[guild.id.value] ?: return@forEach
+            val config = configuration[guild.id.long()] ?: return@forEach
             val shouldUpload = config.mimeRules[type]?.uploadText ?: false
             when {
                 shouldUpload -> {
@@ -78,7 +79,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
 
 
     private fun isAllowed(type: String, guild: Guild): Boolean {
-        val config = configuration[guild.id.value] ?: return false
+        val config = configuration[guild.id.long()] ?: return false
 
         return config.ignoredMimes.contains(type)
     }
@@ -94,7 +95,7 @@ class FileTypeService(private val configuration: Configuration, private val logg
     }
 
     private fun customResponse(mime: String, guild: Guild): String? {
-        val config = configuration[guild.id.value] ?: return null
+        val config = configuration[guild.id.long()] ?: return null
         val mimeConfig = config.mimeRules[mime] ?: return null
 
         return mimeConfig.message

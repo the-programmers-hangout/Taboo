@@ -9,13 +9,14 @@ import me.jakejmattson.discordkt.api.annotations.Service
 import me.moeszyslak.taboo.data.Configuration
 import me.moeszyslak.taboo.data.FileWrapper
 import me.moeszyslak.taboo.extensions.descriptor
+import me.moeszyslak.taboo.extensions.long
 
 @Service
 class LoggerService(private val configuration: Configuration, private val discord: Discord) {
 
     private suspend fun withLog(guild: Guild, f: () -> String) =
-        getLogConfig(guild.id.value).apply {
-            log(guild, getLogConfig(guild.id.value), f())
+        getLogConfig(guild.id.long()).apply {
+            log(guild, getLogConfig(guild.id.long()), f())
         }
 
 
