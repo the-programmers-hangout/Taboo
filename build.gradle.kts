@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     implementation("me.jakejmattson:DiscordKt:${Versions.DISCORDKT}")
-    implementation("org.apache.tika:tika-parsers:1.24.1")
+    implementation("org.apache.tika:tika-parsers:2.1.0")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
     implementation("org.slf4j:slf4j-simple:1.7.30")
